@@ -1,0 +1,93 @@
+/* Premium Design System */
+:root {
+      --bg-dark: #0f172a;
+      --bg-card: rgba(30, 41, 59, 0.7);
+      --primary: #6366f1; /* Indigo */
+      --primary-hover: #4f46e5;
+      --secondary: #8b5cf6; /* Purple */
+      --accent: #06b6d4; /* Cyan */
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --gold: #fbbf24;
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+* {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+}
+
+body {
+      background-color: var(--bg-dark);
+      background-image: 
+          radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+          radial-gradient(at 100% 0%, rgba(139, 92, 246, 0.15) 0px, transparent 50%),
+          radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.15) 0px, transparent 50%);
+  %);
+      background-attachment: fixed;
+      color: var(--text-main);
+      overflow-x: hidden;
+}
+
+/* Typography & Utilities */
+h1, h2, h3, h4 { font-weight: 700; }
+.text-yellow { color: var(--warning); }
+.text-gold { color: var(--gold); }
+.text-purple { color: var(--secondary); }
+.text-blue { color: var(--primary); }
+.text-danger { color: var(--danger); }
+.text-success { color: var(--success); }
+.text-accent { color: var(--accent); }
+.highlight-text { color: var(--primary); font-weight: bold; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-4 { margin-top: 1rem; }
+.w-full { width: 100%; }
+.text-center { text-align: center; }
+.hidden { display: none !important; }
+
+/* Glassmorphism Panels */
+.glass-panel {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      box-shadow: var(--glass-shadow);
+      padding: 20px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-panel:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+}
+
+/* Buttons */
+button {
+
+      cursor: ointer;
+      border: none;
+      outline: none;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      transition: all 0.3s ease;
+}
+
+.primary-btn {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 1rem;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+}
+.primary-btn:hover {
+      transform: scale(1.02);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
+}
