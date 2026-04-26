@@ -1,0 +1,17 @@
+{
+    "name": "PadhaiSathi - Ultimate Exam Expert",
+    "short_name": "PadhaiSathi",
+    "start_url": "./index.html",
+    "display": "standalone",
+    "background_color": "#0f172a",
+    "theme_color": "#0f172a",
+    "description": "Your ultimate exam expert and personal tutor for UPSC, BPSC, SSC, and more.",
+    "icons": [
+          {
+                  "src": "icon.png",
+                  "sizes": "1024x1024",
+                  "type": "image/png",
+                  "purpose": "any maskable"
+          }
+    ]
+}
