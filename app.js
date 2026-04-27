@@ -9,7 +9,7 @@ try {
     console.error("Supabase failed to initialize. Check your internet or CDN.", e);
 }
 
-window.app = {
+window.padhaiApp = {
     state: {
         isLoggedIn: false,
         userExam: '',
@@ -495,5 +495,5 @@ window.app = {
 
 // Initialize App
 document.addEventListener('DOMContentLoaded', () => {
-    app.init();
+    padhaiApp.init();
 });
