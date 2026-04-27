@@ -49,39 +49,39 @@ window.padhaiApp = {
             // Setup Supabase Auth Listener
             if (supabase) {
                 supabase.auth.onAuthStateChange(function(event, session) {
-                    this.authChecked = true;
+                    padhaiApp.authChecked = true;
                     if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN') {
                         if (session) {
-                            this.state.isLoggedIn = true;
-                            this.state.user = session.user;
+                            padhaiApp.state.isLoggedIn = true;
+                            padhaiApp.state.user = session.user;
                             
-                            if(this.state.pendingDownload) {
-                                const title = this.state.pendingDownload;
-                                this.state.pendingDownload = null;
-                                this.downloadMockPDF(title);
+                            if(padhaiApp.state.pendingDownload) {
+                                const title = padhaiApp.state.pendingDownload;
+                                padhaiApp.state.pendingDownload = null;
+                                padhaiApp.downloadMockPDF(title);
                             }
 
-                            if(this.state.userExam) {
+                            if(padhaiApp.state.userExam) {
                                 const displays = document.querySelectorAll('.user-exam-display');
-                                for(let i=0; i<displays.length; i++) { displays[i].innerText = this.state.userExam.toUpperCase(); }
-                                this.navigate('dashboard-screen');
+                                for(let i=0; i<displays.length; i++) { displays[i].innerText = padhaiApp.state.userExam.toUpperCase(); }
+                                padhaiApp.navigate('dashboard-screen');
                             } else {
-                                this.navigate('onboarding-screen');
+                                padhaiApp.navigate('onboarding-screen');
                             }
                         } else {
-                            this.navigateGuest();
+                            padhaiApp.navigateGuest();
                         }
                     } else if (event === 'SIGNED_OUT') {
-                        this.state.isLoggedIn = false;
-                        this.navigate('dashboard-screen');
+                        padhaiApp.state.isLoggedIn = false;
+                        padhaiApp.navigate('dashboard-screen');
                     }
                 });
 
                 // Safety timeout: if Supabase doesn't respond in 2s, assume guest mode
                 setTimeout(function() {
-                    if (!this.authChecked) {
+                    if (!padhaiApp.authChecked) {
                         console.warn("Auth timeout - loading Guest Mode");
-                        this.navigateGuest();
+                        padhaiApp.navigateGuest();
                     }
                 }, 2000);
             } else {
@@ -125,7 +125,7 @@ window.padhaiApp = {
                 for(let j=0; j<links.length; j++) { links[j].classList.remove('active'); }
                 e.currentTarget.classList.add('active');
                 const target = e.currentTarget.getAttribute('data-target');
-                this.navigate(target);
+                padhaiApp.navigate(target);
                 
                 // Close sidebar on mobile after click
                 if(window.innerWidth < 768) {
