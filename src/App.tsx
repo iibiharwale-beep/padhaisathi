@@ -159,10 +159,11 @@ const LibraryView = ({ setTab }: { setTab: (t: string, p?: any) => void }) => {
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
   const [selectedType, setSelectedType] = useState<string | null>(null);
 
-  const subjects = ['Polity', 'History', 'Geography', 'Economy', 'Science', 'Bihar Special', 'Current Affairs'];
+  const subjects = ['NCERT', 'Polity', 'History', 'Geography', 'Economy', 'Science', 'Bihar Special', 'Current Affairs'];
   const types = [
     { id: 'handmade_pdf', label: 'Handmade Notes', icon: <PenTool size={20}/> },
     { id: 'digital_pro', label: 'Computerized', icon: <Monitor size={20}/> },
+    { id: 'ncert_folder', label: 'NCERT Books', icon: <BookOpen size={20}/> },
     { id: 'newspaper', label: 'Newspapers', icon: <Newspaper size={20}/> },
     { id: 'mindmap', label: 'Mindmaps', icon: <Zap size={20}/> }
   ];
@@ -172,7 +173,13 @@ const LibraryView = ({ setTab }: { setTab: (t: string, p?: any) => void }) => {
       setLoading(true);
       let query = supabase.from('study_materials').select('*');
       if (selectedSubject) query = query.eq('subject', selectedSubject);
-      if (selectedType) query = query.eq('type', selectedType);
+      
+      // If NCERT folder is selected, filter by subject 'NCERT'
+      if (selectedType === 'ncert_folder') {
+        query = query.eq('subject', 'NCERT');
+      } else if (selectedType) {
+        query = query.eq('type', selectedType);
+      }
       
       const { data } = await query.order('created_at', { ascending: false });
       if (data) setMaterials(data);
