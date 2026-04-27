@@ -432,7 +432,23 @@ const VIPMentorship = () => (
   </div>
 );
 
-const TestSeriesPYQ = () => (
+const TestSeriesPYQ = ({ setTab }: { setTab: (t: string) => void }) => {
+  const [tests, setTests] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTests = async () => {
+      const { data } = await supabase.from('test_series').select('*');
+      if (data) setTests(data);
+      setLoading(false);
+    };
+    fetchTests();
+  }, []);
+
+  const pyqs = tests.filter(t => t.type === 'pyq');
+  const mocks = tests.filter(t => t.type === 'mock');
+
+  return (
   <div className="p-8 space-y-8 animate-in fade-in">
     <div className="flex justify-between items-end mb-6 border-b border-slate-200 pb-4">
       <div>
@@ -446,6 +462,9 @@ const TestSeriesPYQ = () => (
       </div>
     </div>
 
+    {loading ? (
+      <div className="flex justify-center p-10"><div className="w-10 h-10 border-4 border-rose-200 border-t-rose-600 rounded-full animate-spin"></div></div>
+    ) : (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
       {/* 20 Years PYQ Section */}
       <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 relative overflow-hidden group">
@@ -456,19 +475,16 @@ const TestSeriesPYQ = () => (
         </div>
         <p className="text-sm text-slate-500 mb-6">Solve exact questions asked in the last two decades. Topic-wise filtered with detailed solutions.</p>
         
-        <div className="space-y-3">
-          {[
-            { year: '2023-2024', label: 'Recent Trend', color: 'bg-emerald-50 text-emerald-700' },
-            { year: '2015-2022', label: 'Pattern Change', color: 'bg-blue-50 text-blue-700' },
-            { year: '2004-2014', label: 'Classic Era', color: 'bg-slate-100 text-slate-700' }
-          ].map((pyq, i) => (
-            <div key={i} className="flex justify-between items-center p-3 rounded-xl border border-slate-100 hover:border-indigo-300 transition cursor-pointer">
-              <span className="font-bold text-slate-700">{pyq.year} Papers</span>
-              <span className={`text-xs font-bold px-3 py-1 rounded-full ${pyq.color}`}>{pyq.label}</span>
+        <div className="space-y-3 h-64 overflow-y-auto pr-2 custom-scrollbar">
+          {pyqs.map((pyq, i) => (
+            <div key={pyq.id} onClick={() => setTab('live_test')} className="flex justify-between items-center p-3 rounded-xl border border-slate-100 hover:border-indigo-300 transition cursor-pointer hover:bg-indigo-50">
+              <span className="font-bold text-slate-700">{pyq.name}</span>
+              <span className={`text-xs font-bold px-3 py-1 rounded-full bg-slate-100 text-slate-600`}>{pyq.year || 'All Years'}</span>
             </div>
           ))}
+          {pyqs.length === 0 && <p className="text-slate-500 italic">No PYQs found.</p>}
         </div>
-        <button className="w-full mt-4 bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700 transition">Start PYQ Mode</button>
+        <button onClick={() => setTab('live_test')} className="w-full mt-4 bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700 transition">Start Random PYQ</button>
       </div>
 
       {/* Full Length Mocks */}
@@ -480,25 +496,140 @@ const TestSeriesPYQ = () => (
         </div>
         <p className="text-sm text-slate-500 mb-6">Exact exam interface (TCS/NTA pattern). Negative marking, timer, and All India Rank.</p>
         
-        <div className="space-y-3">
-          {[
-            { name: 'Mega Mock Test 1 (New Pattern)', status: 'Live Now', type: 'live' },
-            { name: 'Sectional Mock: Polity + History', status: 'Attempted', type: 'done' },
-            { name: 'CSAT / Aptitude Test 5', status: 'Upcoming (Sunday)', type: 'wait' }
-          ].map((mock, i) => (
-            <div key={i} className="flex justify-between items-center p-3 rounded-xl border border-slate-100 hover:border-rose-300 transition cursor-pointer">
-              <span className="font-medium text-slate-700 text-sm">{mock.name}</span>
-              <span className={`text-xs font-bold px-2 py-1 rounded-md ${mock.type === 'live' ? 'bg-red-100 text-red-600 animate-pulse' : mock.type === 'done' ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'}`}>
-                {mock.status}
+        <div className="space-y-3 h-64 overflow-y-auto pr-2 custom-scrollbar">
+          {mocks.map((mock, i) => (
+            <div key={mock.id} onClick={() => setTab('live_test')} className="flex justify-between items-center p-3 rounded-xl border border-slate-100 hover:border-rose-300 transition cursor-pointer hover:bg-rose-50">
+              <span className="font-medium text-slate-700 text-sm truncate pr-2">{mock.name}</span>
+              <span className={`text-xs font-bold px-2 py-1 rounded-md shrink-0 ${mock.status === 'live' ? 'bg-red-100 text-red-600 animate-pulse' : mock.status === 'done' ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'}`}>
+                {mock.status.toUpperCase()}
               </span>
             </div>
           ))}
+          {mocks.length === 0 && <p className="text-slate-500 italic">No mocks found.</p>}
         </div>
-        <button className="w-full mt-4 bg-slate-900 text-white font-bold py-3 rounded-xl hover:bg-slate-800 transition">View All Tests</button>
+        <button onClick={() => setTab('live_test')} className="w-full mt-4 bg-slate-900 text-white font-bold py-3 rounded-xl hover:bg-slate-800 transition">Start Mock Test</button>
       </div>
     </div>
+    )}
   </div>
-);
+  );
+};
+
+const LiveTestEngine = ({ onExit }: { onExit: () => void }) => {
+  const [timeLeft, setTimeLeft] = useState(3600); // 60 mins in seconds
+  
+  useEffect(() => {
+    const timer = setInterval(() => setTimeLeft(p => p > 0 ? p - 1 : 0), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatTime = (secs: number) => {
+    const m = Math.floor(secs / 60).toString().padStart(2, '0');
+    const s = (secs % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+  };
+
+  return (
+    <div className="absolute inset-0 bg-slate-50 z-50 flex flex-col animate-in fade-in zoom-in-95 duration-300">
+      {/* Top Navbar */}
+      <div className="bg-slate-900 text-white px-6 py-4 flex justify-between items-center shadow-lg">
+        <div className="flex items-center gap-4">
+          <h1 className="text-xl font-bold tracking-wider uppercase">Mega Mock Test - UPSC Prelims</h1>
+          <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded animate-pulse">LIVE</span>
+        </div>
+        <div className="flex items-center gap-6">
+          <div className="bg-slate-800 px-4 py-2 rounded-lg flex items-center gap-3 border border-slate-700">
+            <Clock className={timeLeft < 300 ? "text-red-400 animate-pulse" : "text-emerald-400"} />
+            <span className={`text-xl font-mono font-bold tracking-widest ${timeLeft < 300 ? "text-red-400" : "text-emerald-400"}`}>
+              {formatTime(timeLeft)}
+            </span>
+          </div>
+          <button onClick={onExit} className="text-slate-400 hover:text-white transition">Exit Exam</button>
+        </div>
+      </div>
+
+      <div className="flex flex-1 overflow-hidden">
+        {/* Left Side: Question Area */}
+        <div className="flex-1 flex flex-col border-r border-slate-200 bg-white">
+          <div className="border-b border-slate-100 p-4 bg-slate-50 flex justify-between items-center">
+            <h2 className="text-lg font-bold text-slate-700">Question 12</h2>
+            <div className="flex gap-4 text-sm font-semibold">
+              <span className="text-emerald-600">+2.00 Marks</span>
+              <span className="text-red-500">-0.66 Marks</span>
+            </div>
+          </div>
+          <div className="p-8 flex-1 overflow-y-auto">
+            <p className="text-lg text-slate-800 mb-8 leading-relaxed font-medium">
+              Consider the following statements regarding the 'Basic Structure Doctrine' of the Indian Constitution:
+              <br/><br/>
+              1. It was first articulated in the Golaknath case (1967).<br/>
+              2. Judicial review is considered a part of the basic structure.<br/>
+              3. The Constitution originally contained a provision for the basic structure.
+              <br/><br/>
+              Which of the statements given above is/are correct?
+            </p>
+            <div className="space-y-4 max-w-2xl">
+              {['1 and 2 only', '2 only', '2 and 3 only', '1, 2 and 3'].map((opt, i) => (
+                <label key={i} className="flex items-center gap-4 p-4 border border-slate-200 rounded-xl hover:bg-indigo-50 hover:border-indigo-300 cursor-pointer transition">
+                  <input type="radio" name="q12" className="w-5 h-5 text-indigo-600 focus:ring-indigo-500" />
+                  <span className="text-slate-700 font-medium">{String.fromCharCode(65+i)}) {opt}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+          {/* Action Buttons */}
+          <div className="border-t border-slate-200 p-4 bg-slate-50 flex justify-between items-center">
+            <div className="flex gap-4">
+              <button className="px-6 py-3 border border-slate-300 text-slate-600 rounded-xl hover:bg-slate-100 font-bold">Mark for Review & Next</button>
+              <button className="px-6 py-3 border border-slate-300 text-slate-600 rounded-xl hover:bg-slate-100 font-bold">Clear Response</button>
+            </div>
+            <button className="px-8 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 font-bold shadow-lg shadow-indigo-200">Save & Next</button>
+          </div>
+        </div>
+
+        {/* Right Side: Question Palette */}
+        <div className="w-80 bg-slate-50 flex flex-col shadow-xl z-10">
+          <div className="p-4 border-b border-slate-200 flex items-center gap-4">
+            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=sanje" className="w-12 h-12 rounded-full border border-slate-300 bg-white" alt="avatar"/>
+            <div>
+              <p className="font-bold text-slate-800 text-sm">Sanjeev Kumar</p>
+              <p className="text-xs text-slate-500">Roll No: 190244</p>
+            </div>
+          </div>
+          
+          <div className="p-4 grid grid-cols-2 gap-y-2 gap-x-1 text-xs font-semibold border-b border-slate-200">
+            <div className="flex items-center gap-2"><div className="w-5 h-5 bg-emerald-500 rounded text-white flex items-center justify-center">12</div> Answered</div>
+            <div className="flex items-center gap-2"><div className="w-5 h-5 bg-red-500 rounded text-white flex items-center justify-center">4</div> Not Answered</div>
+            <div className="flex items-center gap-2"><div className="w-5 h-5 bg-slate-200 rounded text-slate-600 border border-slate-300 flex items-center justify-center">80</div> Not Visited</div>
+            <div className="flex items-center gap-2"><div className="w-5 h-5 bg-purple-500 rounded text-white flex items-center justify-center">4</div> Marked</div>
+          </div>
+
+          <div className="p-4 flex-1 overflow-y-auto">
+            <h3 className="font-bold text-slate-700 mb-3 text-sm">Section: General Studies I</h3>
+            <div className="grid grid-cols-5 gap-2">
+              {Array.from({length: 100}).map((_, i) => {
+                let statusClass = 'bg-slate-100 border border-slate-300 text-slate-600 hover:bg-slate-200'; // Default
+                if (i < 12) statusClass = 'bg-emerald-500 text-white border border-emerald-600'; // Answered
+                if (i === 12 || i === 15 || i === 18 || i === 20) statusClass = 'bg-red-500 text-white border border-red-600'; // Not Answered
+                if (i === 45 || i === 50 || i === 52 || i === 60) statusClass = 'bg-purple-500 text-white border border-purple-600'; // Marked
+                
+                return (
+                  <button key={i} className={`w-10 h-10 rounded-md flex items-center justify-center font-bold text-sm ${statusClass} transition-transform hover:scale-110`}>
+                    {i+1}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
+          <div className="p-4 border-t border-slate-200">
+            <button className="w-full bg-emerald-500 text-white font-bold py-3 rounded-xl hover:bg-emerald-600 shadow-lg shadow-emerald-200">Submit Exam</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const OnboardingModal = ({ onSubmit }: { onSubmit: (name: string, exam: string) => void }) => {
   const [name, setName] = useState('');
@@ -640,7 +771,7 @@ export default function App() {
       case 'dashboard': return <Dashboard onStartAssessment={() => setShowOnboarding(true)} userName={userName} userExam={userExam} />;
       case 'library': return <LibraryView setTab={setActiveTab} />;
       case 'content': return <StudyContentViewer />;
-      case 'tests': return <TestSeriesPYQ />;
+      case 'tests': return <TestSeriesPYQ setTab={setActiveTab} />;
       case 'revision': return <SmartRevision />;
       case 'videos': return <VideoContent />;
       case 'audio': return <PremiumAudioBooks />;
@@ -730,6 +861,7 @@ export default function App() {
 
       {/* Overlays */}
       {showOnboarding && <OnboardingModal onSubmit={handleOnboardingSubmit} />}
+      {activeTab === 'live_test' && <LiveTestEngine onExit={() => setActiveTab('tests')} />}
       
       {/* WhatsApp Premium Help Button */}
       <a 
