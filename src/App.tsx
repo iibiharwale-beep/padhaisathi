@@ -153,80 +153,77 @@ const StudyContentViewer = () => (
   </div>
 );
 
-const LibraryView = ({ setTab }: { setTab: (t: string) => void }) => {
+const LibraryView = ({ setTab }: { setTab: (t: string, p?: any) => void }) => {
   const [materials, setMaterials] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
+
+  const subjects = ['Polity', 'History', 'Geography', 'Economy', 'Science', 'Bihar Special'];
 
   useEffect(() => {
     const fetchMaterials = async () => {
-      // Fetching first 30 items for initial fast load
-      const { data, error } = await supabase.from('study_materials').select('*').limit(30);
+      let query = supabase.from('study_materials').select('*');
+      if (selectedSubject) query = query.eq('subject', selectedSubject);
+      
+      const { data } = await query;
       if (data) setMaterials(data);
       setLoading(false);
     };
     fetchMaterials();
-  }, []);
+  }, [selectedSubject]);
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in">
-      <h2 className="text-3xl font-bold text-slate-800">Complete Study Library 📚</h2>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div onClick={() => setTab('content')} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition cursor-pointer hover:border-indigo-300">
-          <div className="text-blue-500 mb-4 bg-blue-50 w-12 h-12 flex items-center justify-center rounded-xl"><FileText size={24} /></div>
-          <h3 className="font-bold text-lg text-slate-800">Handmade Notes</h3>
-          <p className="text-slate-500 text-sm">Topper's handwritten PDFs</p>
-        </div>
-        <div onClick={() => setTab('content')} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition cursor-pointer hover:border-indigo-300">
-          <div className="text-indigo-500 mb-4 bg-indigo-50 w-12 h-12 flex items-center justify-center rounded-xl"><Book size={24} /></div>
-          <h3 className="font-bold text-lg text-slate-800">Computerized Notes</h3>
-          <p className="text-slate-500 text-sm">Standard typed PDFs & NCERTs</p>
-        </div>
-        <div onClick={() => setTab('content')} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition cursor-pointer hover:border-indigo-300">
-          <div className="text-rose-500 mb-4 bg-rose-50 w-12 h-12 flex items-center justify-center rounded-xl"><Newspaper size={24} /></div>
-          <h3 className="font-bold text-lg text-slate-800">Daily Newspapers</h3>
-          <p className="text-slate-500 text-sm">The Hindu, Indian Express</p>
-        </div>
-        <div onClick={() => setTab('content')} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition cursor-pointer hover:border-indigo-300">
-          <div className="text-emerald-500 mb-4 bg-emerald-50 w-12 h-12 flex items-center justify-center rounded-xl"><Layers size={24} /></div>
-          <h3 className="font-bold text-lg text-slate-800">All Subjects</h3>
-          <p className="text-slate-500 text-sm">Topic-wise categorized content</p>
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-3xl font-black text-slate-800">Subject-wise Study Materials 📚</h2>
+          <p className="text-slate-500 font-medium">Categorized full-length notes in Hindi & English.</p>
         </div>
       </div>
 
-      <h3 className="text-2xl font-bold text-slate-800 mt-10 border-t pt-8 border-slate-200">
-        <span className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white px-3 py-1 rounded-lg text-sm mr-3 uppercase tracking-widest align-middle">Live from Database</span>
-        Recently Uploaded Material
-      </h3>
+      {/* Subject Folders */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <button 
+          onClick={() => setSelectedSubject(null)}
+          className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 ${!selectedSubject ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg' : 'bg-white border-slate-100 text-slate-600 hover:border-indigo-300'}`}
+        >
+          <Layers size={24} />
+          <span className="font-bold text-xs uppercase tracking-wider">All Subjects</span>
+        </button>
+        {subjects.map(sub => (
+          <button 
+            key={sub}
+            onClick={() => setSelectedSubject(sub)}
+            className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 ${selectedSubject === sub ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg' : 'bg-white border-slate-100 text-slate-600 hover:border-indigo-300'}`}
+          >
+            {sub === 'Polity' ? <ShieldAlert size={24}/> : sub === 'History' ? <History size={24}/> : sub === 'Geography' ? <Map size={24}/> : sub === 'Economy' ? <Zap size={24}/> : sub === 'Science' ? <Brain size={24}/> : <Award size={24}/>}
+            <span className="font-bold text-xs uppercase tracking-wider">{sub}</span>
+          </button>
+        ))}
+      </div>
 
       {loading ? (
-        <div className="flex justify-center p-10"><div className="w-10 h-10 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div></div>
+        <div className="flex justify-center p-20"><div className="w-12 h-12 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin"></div></div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {materials.map((mat) => (
             <div key={mat.id} onClick={() => setTab('pdf_viewer')} className="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm hover:shadow-lg transition cursor-pointer group hover:border-indigo-300">
               <div className="flex justify-between items-start mb-2">
-                <span className={`text-xs font-bold px-2 py-1 rounded-md uppercase ${mat.type === 'handmade_pdf' ? 'bg-amber-100 text-amber-700' : mat.type === 'mindmap' ? 'bg-rose-100 text-rose-700' : 'bg-blue-100 text-blue-700'}`}>
+                <span className={`text-xs font-bold px-2 py-1 rounded-md uppercase ${mat.type === 'handmade_pdf' ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700'}`}>
                   {mat.type.replace('_', ' ')}
                 </span>
-                {mat.language && (
-                  <div className="flex gap-1">
-                    <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-100">Compressed</span>
-                    <span className={`text-[10px] font-bold px-2 py-1 rounded-full border ${mat.language === 'Hindi' ? 'bg-orange-50 text-orange-600 border-orange-200' : 'bg-slate-50 text-slate-600 border-slate-200'}`}>
-                      {mat.language}
-                    </span>
-                  </div>
-                )}
+                <span className={`text-[10px] font-bold px-2 py-1 rounded-full border ${mat.language === 'Hindi' ? 'bg-orange-50 text-orange-600 border-orange-200' : 'bg-slate-50 text-slate-600 border-slate-200'}`}>
+                  {mat.language}
+                </span>
               </div>
               <h4 className="text-lg font-bold text-slate-800 mt-3 group-hover:text-indigo-600 transition">{mat.title}</h4>
-              <p className="text-sm text-slate-500 mt-1">{mat.description}</p>
+              <p className="text-sm text-slate-500 mt-1 line-clamp-2">{mat.description}</p>
               <div className="mt-4 flex justify-between items-center text-xs font-semibold border-t border-slate-100 pt-3">
                 <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded-md">{mat.subject}</span>
-                <button className="text-indigo-600 hover:underline flex items-center gap-1">Open PDF <ChevronRight size={14}/></button>
+                <button className="text-indigo-600 font-bold flex items-center gap-1">Read Full Notes ➔</button>
               </div>
             </div>
           ))}
-          {materials.length === 0 && <p className="text-slate-500 italic">No materials found in the database yet.</p>}
         </div>
       )}
     </div>
@@ -635,7 +632,7 @@ const TestSeriesPYQ = ({ setTab }: { setTab: (t: string) => void }) => {
         
         <div className="space-y-4 h-[400px] overflow-y-auto pr-2 custom-scrollbar">
           {pyqs.map((pyq) => (
-            <div key={pyq.id} onClick={() => setTab('live_test')} className="flex justify-between items-center p-5 rounded-2xl bg-white border border-slate-100 hover:border-indigo-400 transition-all cursor-pointer hover:shadow-md group/item">
+            <div key={pyq.id} onClick={() => setTab('live_test', { testId: pyq.id })} className="flex justify-between items-center p-5 rounded-2xl bg-white border border-slate-100 hover:border-indigo-400 transition-all cursor-pointer hover:shadow-md group/item">
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center font-bold text-slate-400 group-hover/item:bg-indigo-50 group-hover/item:text-indigo-600 transition-colors">{pyq.year?.slice(-2) || 'PY'}</div>
                 <div>
@@ -674,7 +671,7 @@ const TestSeriesPYQ = ({ setTab }: { setTab: (t: string) => void }) => {
         
         <div className="space-y-4 h-[400px] overflow-y-auto pr-2 custom-scrollbar">
           {mocks.map((mock) => (
-            <div key={mock.id} onClick={() => setTab('live_test')} className="flex justify-between items-center p-5 rounded-2xl bg-white border border-slate-100 hover:border-rose-400 transition-all cursor-pointer hover:shadow-md group/item">
+            <div key={mock.id} onClick={() => setTab('live_test', { testId: mock.id })} className="flex justify-between items-center p-5 rounded-2xl bg-white border border-slate-100 hover:border-rose-400 transition-all cursor-pointer hover:shadow-md group/item">
               <div className="flex items-center gap-4">
                 <div className={`w-3 h-3 rounded-full ${mock.status === 'live' ? 'bg-rose-500 animate-ping' : 'bg-slate-200'}`}></div>
                 <div>
@@ -708,13 +705,30 @@ const TestSeriesPYQ = ({ setTab }: { setTab: (t: string) => void }) => {
   );
 };
 
-const LiveTestEngine = ({ onExit }: { onExit: () => void }) => {
+const LiveTestEngine = ({ testId, onExit }: { testId?: string | null, onExit: () => void }) => {
   const [timeLeft, setTimeLeft] = useState(3600); // 60 mins in seconds
-  
+  const [hasStarted, setHasStarted] = useState(false);
+  const [testData, setTestData] = useState<any>(null);
+
   useEffect(() => {
-    const timer = setInterval(() => setTimeLeft(p => p > 0 ? p - 1 : 0), 1000);
-    return () => clearInterval(timer);
-  }, []);
+    const fetchTestData = async () => {
+      if (testId) {
+        const { data } = await supabase.from('test_series').select('*').eq('id', testId).single();
+        if (data) {
+          setTestData(data);
+          setTimeLeft(data.duration_minutes * 60);
+        }
+      }
+    };
+    fetchTestData();
+  }, [testId]);
+
+  useEffect(() => {
+    if (hasStarted) {
+      const timer = setInterval(() => setTimeLeft(p => p > 0 ? p - 1 : 0), 1000);
+      return () => clearInterval(timer);
+    }
+  }, [hasStarted]);
 
   const formatTime = (secs: number) => {
     const m = Math.floor(secs / 60).toString().padStart(2, '0');
@@ -722,12 +736,46 @@ const LiveTestEngine = ({ onExit }: { onExit: () => void }) => {
     return `${m}:${s}`;
   };
 
+  if (!hasStarted) {
+    return (
+      <div className="absolute inset-0 bg-slate-100 z-50 flex items-center justify-center p-8 animate-in fade-in">
+        <div className="bg-white max-w-2xl w-full rounded-[2.5rem] shadow-2xl overflow-hidden border border-slate-200">
+          <div className="bg-slate-900 p-8 text-white">
+            <h2 className="text-3xl font-black mb-2">Exam Instructions</h2>
+            <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">{testData?.name || 'Loading Test...'}</p>
+          </div>
+          <div className="p-8 space-y-6">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-center">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">Total Questions</p>
+                <p className="text-2xl font-black text-slate-800">{testData?.total_questions || 100}</p>
+              </div>
+              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-center">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">Duration</p>
+                <p className="text-2xl font-black text-slate-800">{testData?.duration_minutes || 60} Min</p>
+              </div>
+            </div>
+            <ul className="space-y-3 text-slate-600 text-sm font-medium">
+              <li className="flex items-start gap-3"><div className="w-1.5 h-1.5 rounded-full bg-indigo-500 mt-2 shrink-0"></div> Each question carries 2 marks for a correct response.</li>
+              <li className="flex items-start gap-3"><div className="w-1.5 h-1.5 rounded-full bg-rose-500 mt-2 shrink-0"></div> Negative marking of 0.33 for each wrong answer.</li>
+              <li className="flex items-start gap-3"><div className="w-1.5 h-1.5 rounded-full bg-indigo-500 mt-2 shrink-0"></div> Do not refresh the page during the exam.</li>
+            </ul>
+            <div className="flex gap-4 pt-4">
+              <button onClick={onExit} className="flex-1 py-4 rounded-2xl font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition">Go Back</button>
+              <button onClick={() => setHasStarted(true)} className="flex-2 py-4 px-8 rounded-2xl font-black text-white bg-indigo-600 hover:bg-indigo-700 shadow-xl shadow-indigo-100 transition">Start Exam Now ➔</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="absolute inset-0 bg-slate-50 z-50 flex flex-col animate-in fade-in zoom-in-95 duration-300">
       {/* Top Navbar */}
       <div className="bg-slate-900 text-white px-6 py-4 flex justify-between items-center shadow-lg">
         <div className="flex items-center gap-4">
-          <h1 className="text-xl font-bold tracking-wider uppercase">Mega Mock Test - UPSC Prelims</h1>
+          <h1 className="text-xl font-bold tracking-wider uppercase">{testData?.name || 'Mega Mock Test'}</h1>
           <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded animate-pulse">LIVE</span>
         </div>
         <div className="flex items-center gap-6">
@@ -902,10 +950,12 @@ export default function App() {
   const [userName, setUserName] = useState('');
   const [userExam, setUserExam] = useState('');
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [selectedTestId, setSelectedTestId] = useState<string | null>(null);
 
-  const navigateTo = (tab: string) => {
-    if (tab === activeTab) return;
-    window.history.pushState({ tab }, '', '');
+  const navigateTo = (tab: string, params?: { testId?: string }) => {
+    if (tab === activeTab && !params?.testId) return;
+    if (params?.testId) setSelectedTestId(params.testId);
+    window.history.pushState({ tab, testId: params?.testId }, '', '');
     setActiveTab(tab);
   };
 
@@ -917,6 +967,7 @@ export default function App() {
     const handlePopState = (event: PopStateEvent) => {
       if (event.state && event.state.tab) {
         setActiveTab(event.state.tab);
+        if (event.state.testId) setSelectedTestId(event.state.testId);
       } else {
         setActiveTab('dashboard');
       }
@@ -989,7 +1040,7 @@ export default function App() {
       case 'library': return <LibraryView setTab={navigateTo} />;
       case 'content': return <StudyContentViewer />;
       case 'tests': return <TestSeriesPYQ setTab={navigateTo} />;
-      case 'live_test': return <LiveTestEngine onExit={goBack} />;
+      case 'live_test': return <LiveTestEngine testId={selectedTestId} onExit={goBack} />;
       case 'pdf_viewer': return <PDFViewerMock onExit={goBack} />;
       case 'revision': return <SmartRevision />;
       case 'videos': return <VideoContent />;
