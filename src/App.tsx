@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { supabase } from './lib/supabaseClient';
 import { 
   BookOpen, Mic, Send, History, Settings, LogOut, Search, Book, PenTool, Award, ChevronRight, Brain, Sparkles, Clock, Play, Pause, RotateCcw, Download, Home, FileText,
   Map, Target, Zap, LayoutDashboard, Library, Layers, Video, Users, Bell, Newspaper, Image as ImageIcon, Flame, CheckCircle2, ShieldAlert, MessageCircle,
@@ -152,34 +153,74 @@ const StudyContentViewer = () => (
   </div>
 );
 
-const LibraryView = ({ setTab }: { setTab: (t: string) => void }) => (
-  <div className="p-8 space-y-8 animate-in fade-in">
-    <h2 className="text-3xl font-bold text-slate-800">Complete Study Library 📚</h2>
-    
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <div onClick={() => setTab('content')} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition cursor-pointer hover:border-indigo-300">
-        <div className="text-blue-500 mb-4 bg-blue-50 w-12 h-12 flex items-center justify-center rounded-xl"><FileText size={24} /></div>
-        <h3 className="font-bold text-lg text-slate-800">Handmade Notes</h3>
-        <p className="text-slate-500 text-sm">Topper's handwritten PDFs</p>
+const LibraryView = ({ setTab }: { setTab: (t: string) => void }) => {
+  const [materials, setMaterials] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchMaterials = async () => {
+      const { data, error } = await supabase.from('study_materials').select('*');
+      if (data) setMaterials(data);
+      setLoading(false);
+    };
+    fetchMaterials();
+  }, []);
+
+  return (
+    <div className="p-8 space-y-8 animate-in fade-in">
+      <h2 className="text-3xl font-bold text-slate-800">Complete Study Library 📚</h2>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div onClick={() => setTab('content')} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition cursor-pointer hover:border-indigo-300">
+          <div className="text-blue-500 mb-4 bg-blue-50 w-12 h-12 flex items-center justify-center rounded-xl"><FileText size={24} /></div>
+          <h3 className="font-bold text-lg text-slate-800">Handmade Notes</h3>
+          <p className="text-slate-500 text-sm">Topper's handwritten PDFs</p>
+        </div>
+        <div onClick={() => setTab('content')} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition cursor-pointer hover:border-indigo-300">
+          <div className="text-indigo-500 mb-4 bg-indigo-50 w-12 h-12 flex items-center justify-center rounded-xl"><Book size={24} /></div>
+          <h3 className="font-bold text-lg text-slate-800">Computerized Notes</h3>
+          <p className="text-slate-500 text-sm">Standard typed PDFs & NCERTs</p>
+        </div>
+        <div onClick={() => setTab('content')} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition cursor-pointer hover:border-indigo-300">
+          <div className="text-rose-500 mb-4 bg-rose-50 w-12 h-12 flex items-center justify-center rounded-xl"><Newspaper size={24} /></div>
+          <h3 className="font-bold text-lg text-slate-800">Daily Newspapers</h3>
+          <p className="text-slate-500 text-sm">The Hindu, Indian Express</p>
+        </div>
+        <div onClick={() => setTab('content')} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition cursor-pointer hover:border-indigo-300">
+          <div className="text-emerald-500 mb-4 bg-emerald-50 w-12 h-12 flex items-center justify-center rounded-xl"><Layers size={24} /></div>
+          <h3 className="font-bold text-lg text-slate-800">All Subjects</h3>
+          <p className="text-slate-500 text-sm">Topic-wise categorized content</p>
+        </div>
       </div>
-      <div onClick={() => setTab('content')} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition cursor-pointer hover:border-indigo-300">
-        <div className="text-indigo-500 mb-4 bg-indigo-50 w-12 h-12 flex items-center justify-center rounded-xl"><Book size={24} /></div>
-        <h3 className="font-bold text-lg text-slate-800">Computerized Notes</h3>
-        <p className="text-slate-500 text-sm">Standard typed PDFs & NCERTs</p>
-      </div>
-      <div onClick={() => setTab('content')} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition cursor-pointer hover:border-indigo-300">
-        <div className="text-rose-500 mb-4 bg-rose-50 w-12 h-12 flex items-center justify-center rounded-xl"><Newspaper size={24} /></div>
-        <h3 className="font-bold text-lg text-slate-800">Daily Newspapers</h3>
-        <p className="text-slate-500 text-sm">The Hindu, Indian Express</p>
-      </div>
-      <div onClick={() => setTab('content')} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition cursor-pointer hover:border-indigo-300">
-        <div className="text-emerald-500 mb-4 bg-emerald-50 w-12 h-12 flex items-center justify-center rounded-xl"><Layers size={24} /></div>
-        <h3 className="font-bold text-lg text-slate-800">All Subjects</h3>
-        <p className="text-slate-500 text-sm">Topic-wise categorized content</p>
-      </div>
+
+      <h3 className="text-2xl font-bold text-slate-800 mt-10 border-t pt-8 border-slate-200">
+        <span className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white px-3 py-1 rounded-lg text-sm mr-3 uppercase tracking-widest align-middle">Live from Database</span>
+        Recently Uploaded Material
+      </h3>
+
+      {loading ? (
+        <div className="flex justify-center p-10"><div className="w-10 h-10 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div></div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {materials.map((mat) => (
+            <div key={mat.id} className="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm hover:shadow-lg transition">
+              <span className={`text-xs font-bold px-2 py-1 rounded-md uppercase ${mat.type === 'handmade_pdf' ? 'bg-amber-100 text-amber-700' : mat.type === 'mindmap' ? 'bg-rose-100 text-rose-700' : 'bg-blue-100 text-blue-700'}`}>
+                {mat.type.replace('_', ' ')}
+              </span>
+              <h4 className="text-lg font-bold text-slate-800 mt-3">{mat.title}</h4>
+              <p className="text-sm text-slate-500 mt-1">{mat.description}</p>
+              <div className="mt-4 flex justify-between items-center text-xs font-semibold">
+                <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded-md">{mat.subject}</span>
+                <button className="text-indigo-600 hover:underline flex items-center gap-1">Open <ChevronRight size={14}/></button>
+              </div>
+            </div>
+          ))}
+          {materials.length === 0 && <p className="text-slate-500 italic">No materials found in the database yet.</p>}
+        </div>
+      )}
     </div>
-  </div>
-);
+  );
+};
 
 const SmartRevision = () => (
   <div className="p-8 space-y-8 animate-in fade-in">
