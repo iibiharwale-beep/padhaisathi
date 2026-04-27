@@ -69,23 +69,23 @@ window.padhaiApp = {
                                 padhaiApp.navigate('onboarding-screen');
                             }
                         } else {
-                            padhaiApp.navigateGuest();
+                            padhaiApp.navigate('login-screen');
                         }
                     } else if (event === 'SIGNED_OUT') {
                         padhaiApp.state.isLoggedIn = false;
-                        padhaiApp.navigate('dashboard-screen');
+                        padhaiApp.navigate('login-screen');
                     }
                 });
 
                 // Safety timeout: if Supabase doesn't respond in 2s, assume guest mode
                 setTimeout(function() {
                     if (!padhaiApp.authChecked) {
-                        console.warn("Auth timeout - loading Guest Mode");
-                        padhaiApp.navigateGuest();
+                        console.warn("Auth timeout - loading Login Mode");
+                        padhaiApp.navigate('login-screen');
                     }
                 }, 2000);
             } else {
-                this.navigateGuest();
+                padhaiApp.navigate('login-screen');
             }
         } catch (err) {
             console.error("App Init Crash:", err);
