@@ -31,7 +31,7 @@ window.padhaiApp = {
                 const savedState = localStorage.getItem('padhaiSathiState');
                 if (savedState) {
                     const parsed = JSON.parse(savedState);
-                    this.state = { ...this.state, ...parsed };
+                    this.state = Object.assign({}, this.state, parsed);
                 }
             } catch (e) {
                 console.error("LocalStorage error:", e);
@@ -181,14 +181,15 @@ window.padhaiApp = {
         document.getElementById('auth-' + viewName + '-view').classList.remove('hidden');
     },
 
-    async handleAuth(action) {
+    handleAuth(action) {
         if (action === 'forgot') {
             const email = document.getElementById('forgot-email').value;
             if(!email) return alert('Please enter your email.');
-            const { error } = await supabase.auth.resetPasswordForEmail(email);
-            if(error) return alert(error.message);
-            alert('Password reset link sent to ' + email);
-            this.toggleAuthView('login');
+            supabase.auth.resetPasswordForEmail(email).then(function(res) {
+                if(res.error) return alert(res.error.message);
+                alert('Password reset link sent to ' + email);
+                padhaiApp.toggleAuthView('login');
+            });
             return;
         }
 
@@ -199,27 +200,27 @@ window.padhaiApp = {
             if(!email || !password) return alert('Email and Password are required.');
             if(password.length < 6) return alert('Password must be at least 6 characters.');
             
-            const { data, error } = await supabase.auth.signUp({
+            supabase.auth.signUp({
                 email: email,
                 password: password,
                 options: { data: { full_name: name } }
+            }).then(function(res) {
+                if(res.error) {
+                    alert("Error: " + res.error.message);
+                    return;
+                }
+                const data = res.data;
+                if (data.user && data.session === null) {
+                    alert("Registration successful! Please check your email inbox to verify your account before logging in.");
+                    padhaiApp.toggleAuthView('login');
+                } else if (data.user && data.session) {
+                    alert("Registration successful! Welcome to PadhaiSathi.");
+                    padhaiApp.navigate('onboarding-screen');
+                } else if(data.user && data.user.identities && data.user.identities.length === 0) {
+                    alert("This email is already registered. Please sign in.");
+                    padhaiApp.toggleAuthView('login');
+                }
             });
-            
-            if(error) {
-                alert("Error: " + error.message);
-                return;
-            }
-
-            if (data.user && data.session === null) {
-                alert("Registration successful! Please check your email inbox to verify your account before logging in.");
-                this.toggleAuthView('login');
-            } else if (data.user && data.session) {
-                alert("Registration successful! Welcome to PadhaiSathi.");
-                this.navigate('onboarding-screen');
-            } else if(data.user && data.user.identities && data.user.identities.length === 0) {
-                alert("This email is already registered. Please sign in.");
-                this.toggleAuthView('login');
-            }
             return;
         }
 
@@ -228,31 +229,23 @@ window.padhaiApp = {
             const password = document.getElementById('login-pass').value;
             if(!email || !password) return alert('Email and Password are required.');
             
-            const { error } = await supabase.auth.signInWithPassword({
+            supabase.auth.signInWithPassword({
                 email: email,
                 password: password,
+            }).then(function(res) {
+                if(res.error) {
+                    alert(res.error.message);
+                }
             });
-            
-            if(error) {
-                alert(error.message);
-                return;
-            }
-            // onAuthStateChange will handle UI transition automatically
             return;
         }
 
         if (action === 'social') {
-            // Note: In a real app, you need to configure OAuth providers in Supabase Dashboard
             alert("Social login requires OAuth provider configuration in the Supabase Dashboard. Use Email/Password for this prototype.");
         }
     },
 
-    async logout() {
-        const { error } = await supabase.auth.signOut();
-        if(error) {
-            console.error('Error logging out:', error.message);
-        }
-    },
+    logout() { supabase.auth.signOut().then(function(res) { if(res.error) { console.error('Error logging out:', res.error.message); } }); },
 
     finishOnboarding() {
         const exam = document.getElementById('exam-select').value;
@@ -497,6 +490,8 @@ window.padhaiApp = {
 document.addEventListener('DOMContentLoaded', () => {
     padhaiApp.init();
 });
+
+
 
 
 
