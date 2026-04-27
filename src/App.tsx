@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   BookOpen, Mic, Send, History, Settings, LogOut, Search, Book, PenTool, Award, ChevronRight, Brain, Sparkles, Clock, Play, Pause, RotateCcw, Download, Home, FileText,
-  Map, Target, Zap, LayoutDashboard, Library, Layers, Video, Users, Bell, Newspaper, Image as ImageIcon, Flame, CheckCircle2, ShieldAlert
+  Map, Target, Zap, LayoutDashboard, Library, Layers, Video, Users, Bell, Newspaper, Image as ImageIcon, Flame, CheckCircle2, ShieldAlert, MessageCircle
 } from 'lucide-react';
 
 interface Message { id: string; text: string; sender: 'user' | 'ai'; timestamp: Date; }
 
-const Dashboard = () => (
+const Dashboard = ({ onStartAssessment }: { onStartAssessment: () => void }) => (
   <div className="p-8 space-y-8 animate-in fade-in duration-500">
     <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-3xl p-8 text-white shadow-xl relative overflow-hidden">
       <div className="absolute top-0 right-0 opacity-10">
@@ -19,7 +19,7 @@ const Dashboard = () => (
         </div>
         <h2 className="text-4xl font-bold mb-4">Welcome back, Learner! 👋</h2>
         <p className="text-indigo-100 text-lg mb-6 max-w-xl">Take a quick 5-minute skill assessment to get a highly personalized AI learning roadmap tailored for you.</p>
-        <button className="bg-white text-indigo-600 px-6 py-3 rounded-xl font-bold hover:scale-105 transition-transform flex items-center gap-2">
+        <button onClick={onStartAssessment} className="bg-white text-indigo-600 px-6 py-3 rounded-xl font-bold hover:scale-105 transition-transform flex items-center gap-2">
           <Brain size={20} /> Start Assessment
         </button>
       </div>
@@ -334,8 +334,36 @@ const JobAlerts = () => (
   </div>
 );
 
+const SkillAssessmentModal = ({ onClose }: { onClose: () => void }) => (
+  <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={onClose}></div>
+    <motion.div 
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      className="relative w-full max-w-md bg-gradient-to-b from-slate-900 to-indigo-950 rounded-2xl shadow-2xl border border-white/10 p-8 text-center"
+    >
+      <h2 className="text-3xl font-bold text-white mb-2 flex items-center justify-center gap-2">Skill Assessment 🎯</h2>
+      <p className="text-slate-300 text-sm mb-8">Let's personalize your learning path.<br/>What exam are you targeting?</p>
+      
+      <div className="space-y-6">
+        <select className="w-full bg-slate-800/50 border border-slate-700 text-white rounded-xl px-4 py-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 appearance-none">
+          <option>UPSC Civil Services</option>
+          <option>SSC CGL</option>
+          <option>Banking (IBPS/SBI)</option>
+          <option>BPSC / State PCS</option>
+        </select>
+        
+        <button onClick={onClose} className="w-full bg-gradient-to-r from-indigo-400 to-purple-400 text-slate-900 font-bold text-lg py-4 rounded-xl hover:opacity-90 transition flex items-center justify-center gap-2">
+          Start My Journey ➔
+        </button>
+      </div>
+    </motion.div>
+  </div>
+);
+
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [showAssessment, setShowAssessment] = useState(false);
   const [input, setInput] = useState('');
   const [isRecording, setIsRecording] = useState(false);
   const [messages, setMessages] = useState<Message[]>([{ id: '1', text: "नमस्ते! मैं आपका पढ़ाई साथी AI हूँ। आज आप क्या पढ़ना चाहेंगे?", sender: 'ai', timestamp: new Date() }]);
@@ -351,7 +379,7 @@ export default function App() {
 
     const renderContent = () => {
     switch(activeTab) {
-      case 'dashboard': return <Dashboard />;
+      case 'dashboard': return <Dashboard onStartAssessment={() => setShowAssessment(true)} />;
       case 'library': return <LibraryView setTab={setActiveTab} />;
       case 'content': return <StudyContentViewer />;
       case 'revision': return <SmartRevision />;
@@ -423,6 +451,20 @@ export default function App() {
         </header>
         <div className="flex-1 overflow-y-auto relative">{renderContent()}</div>
       </main>
+
+      {/* Overlays */}
+      {showAssessment && <SkillAssessmentModal onClose={() => setShowAssessment(false)} />}
+      
+      {/* WhatsApp FAB */}
+      <a 
+        href="https://wa.me/916207715021" 
+        target="_blank" 
+        rel="noreferrer"
+        className="fixed bottom-6 right-6 bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform z-40 flex items-center justify-center animate-bounce"
+        title="Chat on WhatsApp"
+      >
+        <MessageCircle size={32} />
+      </a>
     </div>
   );
 }
