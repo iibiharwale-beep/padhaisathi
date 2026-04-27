@@ -56,7 +56,7 @@ window.padhaiApp = {
 
                             if(this.state.userExam) {
                                 const displays = document.querySelectorAll('.user-exam-display');
-                                displays.forEach(d => d.innerText = this.state.userExam.toUpperCase());
+                                for(let i=0; i<displays.length; i++) { displays[i].innerText = this.state.userExam.toUpperCase(); }
                                 this.navigate('dashboard-screen');
                             } else {
                                 this.navigate('onboarding-screen');
@@ -113,9 +113,9 @@ window.padhaiApp = {
 
     setupNavigation() {
         const links = document.querySelectorAll('.nav-links li');
-        links.forEach(link => {
+        for(let i=0; i<links.length; i++) { let link = links[i];
             link.addEventListener('click', (e) => {
-                links.forEach(l => l.classList.remove('active'));
+                for(let j=0; j<links.length; j++) { links[j].classList.remove('active'); }
                 e.currentTarget.classList.add('active');
                 const target = e.currentTarget.getAttribute('data-target');
                 this.navigate(target);
@@ -143,7 +143,7 @@ window.padhaiApp = {
     },
 
     showScreen(screenId) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        let screens = document.querySelectorAll('.screen'); for(let i=0; i<screens.length; i++) { screens[i].classList.remove('active'); }
         const target = document.getElementById(screenId);
         if(target) target.classList.add('active');
     },
@@ -262,7 +262,7 @@ window.padhaiApp = {
         }
         this.state.userExam = exam;
         const displays = document.querySelectorAll('.user-exam-display');
-        displays.forEach(d => d.innerText = exam.toUpperCase());
+        for(let i=0; i<displays.length; i++) { displays[i].innerText = exam.toUpperCase(); }
         this.saveState();
         this.navigate('dashboard-screen');
     },
@@ -497,3 +497,6 @@ window.padhaiApp = {
 document.addEventListener('DOMContentLoaded', () => {
     padhaiApp.init();
 });
+
+
+
