@@ -1,13 +1,15 @@
 // Initialize Supabase
 const supabaseUrl = 'https://djvxzugtiqriezgyvqyv.supabase.co';
 const supabaseKey = 'sb_publishable_h96f_mlBzpIfYop9dflj5w_JjM2pS8H';
-let supabase;
+let supabase = null; // Disabled for offline prototype mode
 
+/*
 try {
     supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 } catch (e) {
     console.error("Supabase failed to initialize. Check your internet or CDN.", e);
 }
+*/
 
 window.padhaiApp = {
     state: {
