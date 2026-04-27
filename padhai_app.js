@@ -262,11 +262,11 @@ window.padhaiApp = {
                 alert('Please select an exam to continue!');
                 return;
             }
-            this.state.userExam = exam;
+            padhaiApp.state.userExam = exam;
             const displays = document.querySelectorAll('.user-exam-display');
             for(let i=0; i<displays.length; i++) { displays[i].innerText = exam.toUpperCase(); }
-            this.saveState();
-            this.navigate('dashboard-screen');
+            padhaiApp.saveState();
+            padhaiApp.navigate('dashboard-screen');
         } catch (error) {
             alert("Error: " + error.message + " | " + error.stack);
         }
