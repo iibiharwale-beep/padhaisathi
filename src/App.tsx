@@ -368,13 +368,37 @@ export default function App() {
   const [isRecording, setIsRecording] = useState(false);
   const [messages, setMessages] = useState<Message[]>([{ id: '1', text: "नमस्ते! मैं आपका पढ़ाई साथी AI हूँ। आज आप क्या पढ़ना चाहेंगे?", sender: 'ai', timestamp: new Date() }]);
 
-  const handleSend = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSend = async () => {
     if (!input.trim()) return;
-    setMessages([...messages, { id: Date.now().toString(), text: input, sender: 'user', timestamp: new Date() }]);
+    
+    const userText = input;
+    const newUserMsg: Message = { id: Date.now().toString(), text: userText, sender: 'user', timestamp: new Date() };
+    
+    setMessages(prev => [...prev, newUserMsg]);
     setInput('');
-    setTimeout(() => {
-      setMessages(prev => [...prev, { id: Date.now().toString(), text: "यह एक बेहतरीन सवाल है! मैं इस पर रिसर्च कर रहा हूँ...", sender: 'ai', timestamp: new Date() }]);
-    }, 1000);
+    setIsLoading(true);
+
+    try {
+      const apiKey = "AIzaSyCl6ftkg1u5Kq_FF7-QKJdE3nVN-jIlG8o";
+      const prompt = `You are Padhai Sathi, an expert, polite, and helpful AI tutor for Indian students preparing for competitive exams like UPSC, SSC, and BPSC. Please reply in Hinglish (a mix of Hindi and English) using markdown. The user says: "${userText}"`;
+
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+      });
+
+      const data = await response.json();
+      const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Maaf karna, main abhi theek se soch nahi pa raha hoon. Kripya dobara puchiye!";
+
+      setMessages(prev => [...prev, { id: Date.now().toString(), text: aiText, sender: 'ai', timestamp: new Date() }]);
+    } catch (error) {
+      setMessages(prev => [...prev, { id: Date.now().toString(), text: "Network error ho gaya hai. Kripya apna internet check karein.", sender: 'ai', timestamp: new Date() }]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
     const renderContent = () => {
@@ -396,17 +420,26 @@ export default function App() {
                 {messages.map((m) => (
                   <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} key={m.id} className={`flex ${m.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                     <div className={`max-w-[70%] p-4 rounded-2xl shadow-sm ${m.sender === 'user' ? 'bg-indigo-600 text-white rounded-tr-none' : 'bg-white text-slate-800 border border-slate-100 rounded-tl-none'}`}>
-                      <p>{m.text}</p>
+                      <p className="whitespace-pre-wrap">{m.text}</p>
                     </div>
                   </motion.div>
                 ))}
+                {isLoading && (
+                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex justify-start">
+                    <div className="max-w-[70%] p-4 rounded-2xl shadow-sm bg-white text-slate-800 border border-slate-100 rounded-tl-none flex gap-2 items-center">
+                      <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce"></div>
+                      <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                      <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                    </div>
+                  </motion.div>
+                )}
               </AnimatePresence>
             </div>
             <div className="p-6 bg-transparent border-t border-slate-100">
               <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl border border-slate-200 p-2 flex items-center gap-2">
                 <button onClick={() => setIsRecording(!isRecording)} className={`p-3 rounded-xl transition-all ${isRecording ? 'bg-red-100 text-red-600 animate-pulse' : 'hover:bg-slate-100 text-slate-400'}`}><Mic size={24} /></button>
-                <input value={input} onChange={(e) => setInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleSend()} placeholder="अपना सवाल यहाँ लिखें..." className="flex-1 bg-transparent border-none focus:outline-none focus:ring-0 text-slate-800 p-2" />
-                <button onClick={handleSend} className="bg-indigo-600 hover:bg-indigo-700 text-white p-3 rounded-xl shadow-lg shadow-indigo-200"><Send size={24} /></button>
+                <input value={input} onChange={(e) => setInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleSend()} placeholder="अपना सवाल यहाँ लिखें..." className="flex-1 bg-transparent border-none focus:outline-none focus:ring-0 text-slate-800 p-2" disabled={isLoading} />
+                <button onClick={handleSend} disabled={isLoading} className={`p-3 rounded-xl shadow-lg transition-all ${isLoading ? 'bg-slate-300 text-slate-500 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-200'}`}><Send size={24} /></button>
               </div>
             </div>
           </div>
