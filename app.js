@@ -48,7 +48,7 @@ window.padhaiApp = {
 
             // Setup Supabase Auth Listener
             if (supabase) {
-                supabase.auth.onAuthStateChange((event, session) => {
+                supabase.auth.onAuthStateChange(function(event, session) {
                     this.authChecked = true;
                     if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN') {
                         if (session) {
@@ -78,7 +78,7 @@ window.padhaiApp = {
                 });
 
                 // Safety timeout: if Supabase doesn't respond in 2s, assume guest mode
-                setTimeout(() => {
+                setTimeout(function() {
                     if (!this.authChecked) {
                         console.warn("Auth timeout - loading Guest Mode");
                         this.navigateGuest();
@@ -121,7 +121,7 @@ window.padhaiApp = {
     setupNavigation() {
         const links = document.querySelectorAll('.nav-links li');
         for(let i=0; i<links.length; i++) { let link = links[i];
-            link.addEventListener('click', (e) => {
+            link.addEventListener('click', function(e) {
                 for(let j=0; j<links.length; j++) { links[j].classList.remove('active'); }
                 e.currentTarget.classList.add('active');
                 const target = e.currentTarget.getAttribute('data-target');
@@ -140,11 +140,11 @@ window.padhaiApp = {
         const closeBtn = document.getElementById('close-sidebar-btn');
         const sidebar = document.getElementById('sidebar');
 
-        menuBtn.addEventListener('click', () => {
+        menuBtn.addEventListener('click', function() {
             sidebar.classList.add('active');
         });
 
-        closeBtn.addEventListener('click', () => {
+        closeBtn.addEventListener('click', function() {
             sidebar.classList.remove('active');
         });
     },
@@ -292,7 +292,7 @@ window.padhaiApp = {
             btn.style.background = 'linear-gradient(135deg, var(--danger), #b91c1c)';
             status.innerText = "Deep Work in Progress";
             
-            this.state.pomodoroInterval = setInterval(() => {
+            this.state.pomodoroInterval = setInterval(function() {
                 if(this.state.timeLeft > 0) {
                     this.state.timeLeft--;
                     this.updateTimerDisplay();
@@ -338,7 +338,7 @@ window.padhaiApp = {
         chatBox.scrollTop = chatBox.scrollHeight;
 
         // Simulate AI reply
-        setTimeout(() => {
+        setTimeout(function() {
             const aiDiv = document.createElement('div');
             aiDiv.className = 'message ai';
             aiDiv.innerHTML = `<p>Haan, ${text} ke baare me NCERT me diya hai. Kya tum iska detail explanation chahte ho?</p>`;
@@ -361,7 +361,7 @@ window.padhaiApp = {
             document.getElementById('chat-input').placeholder = "Listening...";
             
             // Simulate speaking for 3 seconds
-            setTimeout(() => {
+            setTimeout(function() {
                 this.state.isRecording = false;
                 micBtn.classList.remove('recording');
                 document.getElementById('chat-input').placeholder = "Type your question...";
@@ -423,7 +423,7 @@ window.padhaiApp = {
         a.click();
         
         // Cleanup
-        setTimeout(() => {
+        setTimeout(function() {
             document.body.removeChild(a);
             window.URL.revokeObjectURL(url);
         }, 100);
@@ -460,7 +460,7 @@ window.padhaiApp = {
         chatBox.scrollTop = chatBox.scrollHeight;
 
         // Provide highly accurate simulated answer
-        setTimeout(() => {
+        setTimeout(function() {
             chatBox.removeChild(researchDiv);
             const aiDiv = document.createElement('div');
             aiDiv.className = 'message ai';
@@ -480,7 +480,7 @@ window.padhaiApp = {
             micBtn.classList.add('pulse');
             input.placeholder = "Listening...";
             
-            setTimeout(() => {
+            setTimeout(function() {
                 this.state.isRecording = false;
                 micBtn.style.color = "var(--primary)";
                 micBtn.classList.remove('pulse');
@@ -498,9 +498,10 @@ window.padhaiApp = {
 };
 
 // Initialize App
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
     padhaiApp.init();
 });
+
 
 
 
