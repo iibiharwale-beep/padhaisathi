@@ -55,8 +55,8 @@ const app = {
                             }
 
                             if(this.state.userExam) {
-                                const display = document.getElementById('user-exam-display');
-                                if(display) display.innerText = this.state.userExam.toUpperCase();
+                                const displays = document.querySelectorAll('.user-exam-display');
+                                displays.forEach(d => d.innerText = this.state.userExam.toUpperCase());
                                 this.navigate('dashboard-screen');
                             } else {
                                 this.navigate('onboarding-screen');
@@ -97,14 +97,18 @@ const app = {
     },
 
     saveState() {
-        // Exclude timers and ephemeral UI states from local storage
-        const persistState = {
-            isLoggedIn: this.state.isLoggedIn,
-            userExam: this.state.userExam,
-            streak: this.state.streak,
-            coins: this.state.coins
-        };
-        localStorage.setItem('padhaiSathiState', JSON.stringify(persistState));
+        try {
+            // Exclude timers and ephemeral UI states from local storage
+            const persistState = {
+                isLoggedIn: this.state.isLoggedIn,
+                userExam: this.state.userExam,
+                streak: this.state.streak,
+                coins: this.state.coins
+            };
+            localStorage.setItem('padhaiSathiState', JSON.stringify(persistState));
+        } catch(e) {
+            console.error("saveState error:", e);
+        }
     },
 
     setupNavigation() {
@@ -257,8 +261,8 @@ const app = {
             return;
         }
         this.state.userExam = exam;
-        const display = document.getElementById('user-exam-display');
-        if(display) display.innerText = exam.toUpperCase();
+        const displays = document.querySelectorAll('.user-exam-display');
+        displays.forEach(d => d.innerText = exam.toUpperCase());
         this.saveState();
         this.navigate('dashboard-screen');
     },
