@@ -255,16 +255,20 @@ window.padhaiApp = {
     logout() { supabase.auth.signOut().then(function(res) { if(res.error) { console.error('Error logging out:', res.error.message); } }); },
 
     finishOnboarding() {
-        const exam = document.getElementById('exam-select').value;
-        if(!exam) {
-            alert('Please select an exam to continue!');
-            return;
+        try {
+            const exam = document.getElementById('exam-select').value;
+            if(!exam) {
+                alert('Please select an exam to continue!');
+                return;
+            }
+            this.state.userExam = exam;
+            const displays = document.querySelectorAll('.user-exam-display');
+            for(let i=0; i<displays.length; i++) { displays[i].innerText = exam.toUpperCase(); }
+            this.saveState();
+            this.navigate('dashboard-screen');
+        } catch (error) {
+            alert("Error: " + error.message + " | " + error.stack);
         }
-        this.state.userExam = exam;
-        const displays = document.querySelectorAll('.user-exam-display');
-        for(let i=0; i<displays.length; i++) { displays[i].innerText = exam.toUpperCase(); }
-        this.saveState();
-        this.navigate('dashboard-screen');
     },
 
     submitTest() {
