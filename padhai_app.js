@@ -46,49 +46,17 @@ window.padhaiApp = {
                 console.error("LocalStorage error:", e);
             }
             
-            this.authChecked = false;
-
-            // Setup Supabase Auth Listener
-            if (supabase) {
-                supabase.auth.onAuthStateChange(function(event, session) {
-                    padhaiApp.authChecked = true;
-                    if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN') {
-                        if (session) {
-                            padhaiApp.state.isLoggedIn = true;
-                            padhaiApp.state.user = session.user;
-                            
-                            if(padhaiApp.state.pendingDownload) {
-                                const title = padhaiApp.state.pendingDownload;
-                                padhaiApp.state.pendingDownload = null;
-                                padhaiApp.downloadMockPDF(title);
-                            }
-
-                            if(padhaiApp.state.userExam) {
-                                const displays = document.querySelectorAll('.user-exam-display');
-                                for(let i=0; i<displays.length; i++) { displays[i].innerText = padhaiApp.state.userExam.toUpperCase(); }
-                                padhaiApp.navigate('dashboard-screen');
-                            } else {
-                                padhaiApp.navigate('onboarding-screen');
-                            }
-                        } else {
-                            padhaiApp.navigate('login-screen');
-                        }
-                    } else if (event === 'SIGNED_OUT') {
-                        padhaiApp.state.isLoggedIn = false;
-                        padhaiApp.navigate('login-screen');
-                    }
-                });
-
-                // Safety timeout: if Supabase doesn't respond in 2s, assume guest mode
-                setTimeout(function() {
-                    if (!padhaiApp.authChecked) {
-                        console.warn("Auth timeout - loading Login Mode");
-                        padhaiApp.navigate('login-screen');
-                    }
-                }, 2000);
+            this.state.isLoggedIn = true; // Automatically logged in since login facility is removed
+            
+            // Bypass login entirely
+            if(this.state.userExam) {
+                const displays = document.querySelectorAll('.user-exam-display');
+                for(let i=0; i<displays.length; i++) { displays[i].innerText = this.state.userExam.toUpperCase(); }
+                this.navigate('dashboard-screen');
             } else {
-                padhaiApp.navigate('login-screen');
+                this.navigate('onboarding-screen');
             }
+            
         } catch (err) {
             console.error("App Init Crash:", err);
             // Emergency fallback: show onboarding if everything fails
