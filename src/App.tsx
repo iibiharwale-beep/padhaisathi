@@ -157,73 +157,119 @@ const LibraryView = ({ setTab }: { setTab: (t: string, p?: any) => void }) => {
   const [materials, setMaterials] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
+  const [selectedType, setSelectedType] = useState<string | null>(null);
 
-  const subjects = ['Polity', 'History', 'Geography', 'Economy', 'Science', 'Bihar Special'];
+  const subjects = ['Polity', 'History', 'Geography', 'Economy', 'Science', 'Bihar Special', 'Current Affairs'];
+  const types = [
+    { id: 'handmade_pdf', label: 'Handmade Notes', icon: <PenTool size={20}/> },
+    { id: 'digital_pro', label: 'Computerized', icon: <Monitor size={20}/> },
+    { id: 'newspaper', label: 'Newspapers', icon: <Newspaper size={20}/> },
+    { id: 'mindmap', label: 'Mindmaps', icon: <Zap size={20}/> }
+  ];
 
   useEffect(() => {
     const fetchMaterials = async () => {
+      setLoading(true);
       let query = supabase.from('study_materials').select('*');
       if (selectedSubject) query = query.eq('subject', selectedSubject);
+      if (selectedType) query = query.eq('type', selectedType);
       
-      const { data } = await query;
+      const { data } = await query.order('created_at', { ascending: false });
       if (data) setMaterials(data);
       setLoading(false);
     };
     fetchMaterials();
-  }, [selectedSubject]);
+  }, [selectedSubject, selectedType]);
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 className="text-3xl font-black text-slate-800">Subject-wise Study Materials 📚</h2>
-          <p className="text-slate-500 font-medium">Categorized full-length notes in Hindi & English.</p>
+          <h2 className="text-4xl font-black text-slate-800">Advanced Study Library 📚</h2>
+          <p className="text-slate-500 font-medium">Topic-wise categorized content in Hindi & English.</p>
+        </div>
+        <div className="flex gap-2">
+          <div className="bg-emerald-100 text-emerald-700 px-4 py-2 rounded-full text-xs font-bold border border-emerald-200">
+            250+ New Items Added
+          </div>
         </div>
       </div>
 
-      {/* Subject Folders */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        <button 
-          onClick={() => setSelectedSubject(null)}
-          className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 ${!selectedSubject ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg' : 'bg-white border-slate-100 text-slate-600 hover:border-indigo-300'}`}
-        >
-          <Layers size={24} />
-          <span className="font-bold text-xs uppercase tracking-wider">All Subjects</span>
-        </button>
-        {subjects.map(sub => (
+      {/* Filter Sections */}
+      <div className="space-y-6">
+        {/* Row 1: Material Types (Large Folders) */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {types.map(type => (
+            <button 
+              key={type.id}
+              onClick={() => setSelectedType(selectedType === type.id ? null : type.id)}
+              className={`p-6 rounded-[2rem] border-2 transition-all flex items-center gap-4 group ${selectedType === type.id ? 'bg-indigo-600 border-indigo-600 text-white shadow-xl shadow-indigo-200' : 'bg-white border-slate-100 text-slate-600 hover:border-indigo-300 shadow-sm'}`}
+            >
+              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-colors ${selectedType === type.id ? 'bg-white/20' : 'bg-slate-50 group-hover:bg-indigo-50 text-indigo-600'}`}>
+                {type.icon}
+              </div>
+              <div className="text-left">
+                <span className="font-black text-sm block">{type.label}</span>
+                <span className={`text-[10px] font-bold uppercase tracking-widest ${selectedType === type.id ? 'text-indigo-100' : 'text-slate-400'}`}>Browse Folder</span>
+              </div>
+            </button>
+          ))}
+        </div>
+
+        {/* Row 2: Subject Chips */}
+        <div className="flex flex-wrap gap-2 pt-2 border-t border-slate-100">
           <button 
-            key={sub}
-            onClick={() => setSelectedSubject(sub)}
-            className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 ${selectedSubject === sub ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg' : 'bg-white border-slate-100 text-slate-600 hover:border-indigo-300'}`}
+            onClick={() => setSelectedSubject(null)}
+            className={`px-4 py-2 rounded-xl font-bold text-xs uppercase tracking-wider transition-all border ${!selectedSubject ? 'bg-slate-800 text-white border-slate-800 shadow-md' : 'bg-white text-slate-500 border-slate-100 hover:border-slate-300'}`}
           >
-            {sub === 'Polity' ? <ShieldAlert size={24}/> : sub === 'History' ? <History size={24}/> : sub === 'Geography' ? <Map size={24}/> : sub === 'Economy' ? <Zap size={24}/> : sub === 'Science' ? <Brain size={24}/> : <Award size={24}/>}
-            <span className="font-bold text-xs uppercase tracking-wider">{sub}</span>
+            All Subjects
           </button>
-        ))}
+          {subjects.map(sub => (
+            <button 
+              key={sub}
+              onClick={() => setSelectedSubject(selectedSubject === sub ? null : sub)}
+              className={`px-4 py-2 rounded-xl font-bold text-xs uppercase tracking-wider transition-all border ${selectedSubject === sub ? 'bg-indigo-600 text-white border-indigo-600 shadow-md' : 'bg-white text-slate-500 border-slate-100 hover:border-indigo-300'}`}
+            >
+              {sub}
+            </button>
+          ))}
+        </div>
       </div>
 
       {loading ? (
         <div className="flex justify-center p-20"><div className="w-12 h-12 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin"></div></div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {materials.map((mat) => (
-            <div key={mat.id} onClick={() => setTab('pdf_viewer')} className="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm hover:shadow-lg transition cursor-pointer group hover:border-indigo-300">
-              <div className="flex justify-between items-start mb-2">
-                <span className={`text-xs font-bold px-2 py-1 rounded-md uppercase ${mat.type === 'handmade_pdf' ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700'}`}>
-                  {mat.type.replace('_', ' ')}
-                </span>
-                <span className={`text-[10px] font-bold px-2 py-1 rounded-full border ${mat.language === 'Hindi' ? 'bg-orange-50 text-orange-600 border-orange-200' : 'bg-slate-50 text-slate-600 border-slate-200'}`}>
-                  {mat.language}
-                </span>
+            <div key={mat.id} onClick={() => setTab('pdf_viewer')} className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm hover:shadow-xl transition cursor-pointer group hover:border-indigo-400 flex flex-col h-full relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 rounded-full -mr-12 -mt-12 group-hover:bg-indigo-500/10 transition-all"></div>
+              
+              <div className="flex justify-between items-start mb-4 relative z-10">
+                <div className={`p-3 rounded-xl ${mat.type === 'newspaper' ? 'bg-rose-50 text-rose-600' : mat.type === 'handmade_pdf' ? 'bg-amber-50 text-amber-600' : 'bg-indigo-50 text-indigo-600'}`}>
+                  {mat.type === 'newspaper' ? <Newspaper size={20}/> : mat.type === 'handmade_pdf' ? <PenTool size={20}/> : <Monitor size={20}/>}
+                </div>
+                <div className="flex gap-2">
+                  <span className={`text-[10px] font-black px-2 py-1 rounded-md border ${mat.language === 'Hindi' ? 'bg-orange-50 text-orange-600 border-orange-200' : 'bg-slate-50 text-slate-600 border-slate-200'}`}>
+                    {mat.language.toUpperCase()}
+                  </span>
+                </div>
               </div>
-              <h4 className="text-lg font-bold text-slate-800 mt-3 group-hover:text-indigo-600 transition">{mat.title}</h4>
-              <p className="text-sm text-slate-500 mt-1 line-clamp-2">{mat.description}</p>
-              <div className="mt-4 flex justify-between items-center text-xs font-semibold border-t border-slate-100 pt-3">
-                <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded-md">{mat.subject}</span>
-                <button className="text-indigo-600 font-bold flex items-center gap-1">Read Full Notes ➔</button>
+
+              <h4 className="text-xl font-bold text-slate-800 leading-tight group-hover:text-indigo-600 transition mb-2">{mat.title}</h4>
+              <p className="text-sm text-slate-500 font-medium flex-1 line-clamp-2">{mat.description}</p>
+              
+              <div className="mt-6 flex justify-between items-center text-[10px] font-black uppercase tracking-widest border-t border-slate-50 pt-4">
+                <span className="text-slate-400 bg-slate-50 px-2 py-1 rounded-md">{mat.subject}</span>
+                <span className="text-indigo-600 flex items-center gap-1 group-hover:translate-x-1 transition-transform">Read Notes <ChevronRight size={14}/></span>
               </div>
             </div>
           ))}
+          {materials.length === 0 && (
+            <div className="col-span-full py-20 text-center text-slate-400">
+              <BookOpen size={48} className="mx-auto mb-4 opacity-20"/>
+              <p className="font-bold italic">No materials found matching your filters.</p>
+            </div>
+          )}
         </div>
       )}
     </div>
