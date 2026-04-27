@@ -9,7 +9,7 @@ try {
     console.error("Supabase failed to initialize. Check your internet or CDN.", e);
 }
 
-const app = {
+window.app = {
     state: {
         isLoggedIn: false,
         userExam: '',
