@@ -929,6 +929,7 @@ export default function App() {
       case 'library': return <LibraryView setTab={navigateTo} />;
       case 'content': return <StudyContentViewer />;
       case 'tests': return <TestSeriesPYQ setTab={navigateTo} />;
+      case 'live_test': return <LiveTestEngine onExit={goBack} />;
       case 'pdf_viewer': return <PDFViewerMock onExit={goBack} />;
       case 'revision': return <SmartRevision />;
       case 'videos': return <VideoContent />;
@@ -1033,7 +1034,6 @@ export default function App() {
 
       {/* Overlays */}
       {showOnboarding && <OnboardingModal onSubmit={handleOnboardingSubmit} />}
-      {activeTab === 'live_test' && <LiveTestEngine onExit={goBack} />}
       
       {/* WhatsApp Premium Help Button */}
       <a 
