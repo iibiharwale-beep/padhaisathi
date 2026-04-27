@@ -125,7 +125,7 @@ window.padhaiApp = {
                     document.getElementById('sidebar').classList.remove('active');
                 }
             });
-        });
+        }
     },
 
     setupSidebar() {
