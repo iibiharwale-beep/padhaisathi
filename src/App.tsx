@@ -413,27 +413,87 @@ const Community = () => (
   </div>
 );
 
-const JobAlerts = () => (
-  <div className="p-8 space-y-6 animate-in fade-in">
-    <h2 className="text-3xl font-bold text-slate-800 mb-6">Job Notifications & Alerts 📢</h2>
-    <div className="space-y-4">
-      {[
-        { t: 'UPSC CSE 2026 Notification Released', d: 'Apply before 20th Feb', type: 'New Vacancy' },
-        { t: 'SSC CGL Tier 1 Admit Card Out', d: 'Download your admit card now', type: 'Admit Card' },
-        { t: 'IBPS PO Final Result Declared', d: 'Check cutoff marks', type: 'Result' }
-      ].map((job, i) => (
-        <div key={i} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex justify-between items-center hover:shadow-md transition">
-          <div>
-            <span className={`text-xs font-bold px-2 py-1 rounded-md mb-2 inline-block ${job.type === 'New Vacancy' ? 'bg-green-100 text-green-700' : job.type === 'Admit Card' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'}`}>{job.type}</span>
-            <h3 className="font-bold text-lg text-slate-800">{job.t}</h3>
-            <p className="text-slate-500 text-sm mt-1">{job.d}</p>
-          </div>
-          <button className="bg-slate-900 text-white px-6 py-3 rounded-xl font-medium hover:bg-slate-800 transition">View Details</button>
-        </div>
-      ))}
+const JobAlerts = () => {
+  const [alerts, setAlerts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAlerts = async () => {
+      const { data } = await supabase.from('job_notifications').select('*').order('created_at', { ascending: false });
+      if (data) setAlerts(data);
+      setLoading(false);
+    };
+    fetchAlerts();
+  }, []);
+
+  const jobs = alerts.filter(a => a.category === 'latest_job');
+  const admitCards = alerts.filter(a => a.category === 'admit_card');
+  const results = alerts.filter(a => a.category === 'result');
+
+  const Column = ({ title, data, color }: { title: string, data: any[], color: string }) => (
+    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col h-full">
+      <div className={`bg-${color}-600 p-4 text-white font-bold text-center uppercase tracking-wider text-sm`}>
+        {title}
+      </div>
+      <div className="flex-1 p-2 space-y-1 overflow-y-auto max-h-[500px] custom-scrollbar">
+        {data.map((item, i) => (
+          <a 
+            key={item.id} 
+            href={item.apply_link} 
+            target="_blank" 
+            rel="noreferrer"
+            className="block p-3 rounded-lg hover:bg-slate-50 border-b border-slate-50 last:border-0 transition-colors group"
+          >
+            <div className="flex items-center gap-2">
+              <div className={`w-1.5 h-1.5 rounded-full bg-${color}-500 shrink-0`}></div>
+              <p className="text-sm font-medium text-slate-700 group-hover:text-indigo-600 transition-colors line-clamp-2">
+                {item.title}
+              </p>
+            </div>
+          </a>
+        ))}
+        {data.length === 0 && <p className="p-8 text-center text-slate-400 italic text-sm">No updates available</p>}
+      </div>
+      <div className="p-3 bg-slate-50 text-center">
+        <button className={`text-${color}-600 text-xs font-bold hover:underline`}>View All {title}</button>
+      </div>
     </div>
-  </div>
-);
+  );
+
+  return (
+    <div className="p-8 space-y-8 animate-in fade-in bg-slate-50/50 min-h-full">
+      <div className="flex flex-col md:flex-row justify-between items-center gap-4 border-b border-slate-200 pb-6">
+        <div>
+          <h2 className="text-4xl font-black text-slate-800 tracking-tight">Job Notifications 📢</h2>
+          <p className="text-slate-500 font-medium mt-1 italic">India's #1 Job Portal style notifications (SarkariResult Style)</p>
+        </div>
+        <div className="bg-indigo-600 text-white px-5 py-2 rounded-full text-xs font-bold shadow-lg shadow-indigo-100 animate-pulse">
+          UPDATED: {new Date().toLocaleDateString()}
+        </div>
+      </div>
+
+      {loading ? (
+        <div className="flex justify-center p-20"><div className="w-12 h-12 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin"></div></div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+          <Column title="Latest Jobs" data={jobs} color="indigo" />
+          <Column title="Admit Cards" data={admitCards} color="rose" />
+          <Column title="Results" data={results} color="emerald" />
+        </div>
+      )}
+
+      {/* Marquee Style News Ticker */}
+      <div className="bg-slate-900 text-white p-3 rounded-xl overflow-hidden relative">
+        <div className="flex whitespace-nowrap animate-marquee items-center gap-8">
+          <span className="flex items-center gap-2 text-rose-400 font-bold uppercase text-xs"><Zap size={14}/> Important:</span>
+          <span className="text-sm font-medium">BPSC 70th Prelims Form Re-opened | SSC CGL Admit Card Download Link Active | Bihar Police Exam Postponed</span>
+          <span className="flex items-center gap-2 text-rose-400 font-bold uppercase text-xs"><Zap size={14}/> Important:</span>
+          <span className="text-sm font-medium">BPSC 70th Prelims Form Re-opened | SSC CGL Admit Card Download Link Active | Bihar Police Exam Postponed</span>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const PremiumAudioBooks = () => (
   <div className="p-8 space-y-6 animate-in fade-in">
