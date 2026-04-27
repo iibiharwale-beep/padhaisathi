@@ -159,7 +159,8 @@ const LibraryView = ({ setTab }: { setTab: (t: string) => void }) => {
 
   useEffect(() => {
     const fetchMaterials = async () => {
-      const { data, error } = await supabase.from('study_materials').select('*');
+      // Fetching first 30 items for initial fast load
+      const { data, error } = await supabase.from('study_materials').select('*').limit(30);
       if (data) setMaterials(data);
       setLoading(false);
     };
@@ -209,9 +210,12 @@ const LibraryView = ({ setTab }: { setTab: (t: string) => void }) => {
                   {mat.type.replace('_', ' ')}
                 </span>
                 {mat.language && (
-                  <span className={`text-[10px] font-bold px-2 py-1 rounded-full border ${mat.language === 'Hindi' ? 'bg-orange-50 text-orange-600 border-orange-200' : 'bg-slate-50 text-slate-600 border-slate-200'}`}>
-                    {mat.language}
-                  </span>
+                  <div className="flex gap-1">
+                    <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-100">Compressed</span>
+                    <span className={`text-[10px] font-bold px-2 py-1 rounded-full border ${mat.language === 'Hindi' ? 'bg-orange-50 text-orange-600 border-orange-200' : 'bg-slate-50 text-slate-600 border-slate-200'}`}>
+                      {mat.language}
+                    </span>
+                  </div>
                 )}
               </div>
               <h4 className="text-lg font-bold text-slate-800 mt-3 group-hover:text-indigo-600 transition">{mat.title}</h4>
