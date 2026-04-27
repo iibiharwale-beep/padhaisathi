@@ -760,7 +760,6 @@ const OnboardingModal = ({ onSubmit }: { onSubmit: (name: string, exam: string) 
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [history, setHistory] = useState<string[]>(['dashboard']);
   const [showAssessment, setShowAssessment] = useState(false);
   const [userName, setUserName] = useState('');
   const [userExam, setUserExam] = useState('');
@@ -768,18 +767,27 @@ export default function App() {
 
   const navigateTo = (tab: string) => {
     if (tab === activeTab) return;
-    setHistory(prev => [...prev, tab]);
+    window.history.pushState({ tab }, '', '');
     setActiveTab(tab);
   };
 
   const goBack = () => {
-    if (history.length <= 1) return;
-    const newHistory = [...history];
-    newHistory.pop();
-    const prevTab = newHistory[newHistory.length - 1];
-    setHistory(newHistory);
-    setActiveTab(prevTab);
+    window.history.back();
   };
+
+  useEffect(() => {
+    const handlePopState = (event: PopStateEvent) => {
+      if (event.state && event.state.tab) {
+        setActiveTab(event.state.tab);
+      } else {
+        setActiveTab('dashboard');
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    // Initialize history state
+    window.history.replaceState({ tab: 'dashboard' }, '', '');
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   useEffect(() => {
     const savedName = localStorage.getItem('ps_userName');
@@ -923,7 +931,7 @@ export default function App() {
       <main className="flex-1 flex flex-col relative bg-slate-50/50">
         <header className="h-16 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-8 z-10">
           <div className="flex items-center gap-4">
-            {history.length > 1 && (
+            {activeTab !== 'dashboard' && (
               <button 
                 onClick={goBack} 
                 className="flex items-center gap-1 text-indigo-600 hover:bg-indigo-50 px-3 py-1.5 rounded-lg transition-all font-bold text-sm border border-indigo-100 shadow-sm"
