@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   BookOpen, Mic, Send, History, Settings, LogOut, Search, Book, PenTool, Award, ChevronRight, Brain, Sparkles, Clock, Play, Pause, RotateCcw, Download, Home, FileText,
-  Map, Target, Zap, LayoutDashboard, Library, Layers, Video, Users, Bell, Newspaper, Image as ImageIcon, Flame, CheckCircle2, ShieldAlert, MessageCircle
+  Map, Target, Zap, LayoutDashboard, Library, Layers, Video, Users, Bell, Newspaper, Image as ImageIcon, Flame, CheckCircle2, ShieldAlert, MessageCircle,
+  Headphones, UserPlus, Calendar, PlayCircle, Star
 } from 'lucide-react';
 
 interface Message { id: string; text: string; sender: 'user' | 'ai'; timestamp: Date; }
 
-const Dashboard = ({ onStartAssessment }: { onStartAssessment: () => void }) => (
+const Dashboard = ({ onStartAssessment, userName, userExam }: { onStartAssessment: () => void, userName: string, userExam: string }) => (
   <div className="p-8 space-y-8 animate-in fade-in duration-500">
     <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-3xl p-8 text-white shadow-xl relative overflow-hidden">
       <div className="absolute top-0 right-0 opacity-10">
@@ -15,12 +16,12 @@ const Dashboard = ({ onStartAssessment }: { onStartAssessment: () => void }) => 
       </div>
       <div className="relative z-10">
         <div className="flex items-center gap-3 mb-2">
-          <span className="bg-white/20 px-3 py-1 rounded-full text-sm font-semibold backdrop-blur-sm">Skill Assessment Pending</span>
+          <span className="bg-white/20 px-3 py-1 rounded-full text-sm font-semibold backdrop-blur-sm">🎯 Target: {userExam || 'Not Selected'}</span>
         </div>
-        <h2 className="text-4xl font-bold mb-4">Welcome back, Learner! 👋</h2>
+        <h2 className="text-4xl font-bold mb-4">Welcome back, {userName || 'Learner'}! 👋</h2>
         <p className="text-indigo-100 text-lg mb-6 max-w-xl">Take a quick 5-minute skill assessment to get a highly personalized AI learning roadmap tailored for you.</p>
         <button onClick={onStartAssessment} className="bg-white text-indigo-600 px-6 py-3 rounded-xl font-bold hover:scale-105 transition-transform flex items-center gap-2">
-          <Brain size={20} /> Start Assessment
+          <Brain size={20} /> Update Target Exam
         </button>
       </div>
     </div>
@@ -334,36 +335,139 @@ const JobAlerts = () => (
   </div>
 );
 
-const SkillAssessmentModal = ({ onClose }: { onClose: () => void }) => (
-  <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-    <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={onClose}></div>
-    <motion.div 
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="relative w-full max-w-md bg-gradient-to-b from-slate-900 to-indigo-950 rounded-2xl shadow-2xl border border-white/10 p-8 text-center"
-    >
-      <h2 className="text-3xl font-bold text-white mb-2 flex items-center justify-center gap-2">Skill Assessment 🎯</h2>
-      <p className="text-slate-300 text-sm mb-8">Let's personalize your learning path.<br/>What exam are you targeting?</p>
-      
-      <div className="space-y-6">
-        <select className="w-full bg-slate-800/50 border border-slate-700 text-white rounded-xl px-4 py-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 appearance-none">
-          <option>UPSC Civil Services</option>
-          <option>SSC CGL</option>
-          <option>Banking (IBPS/SBI)</option>
-          <option>BPSC / State PCS</option>
-        </select>
-        
-        <button onClick={onClose} className="w-full bg-gradient-to-r from-indigo-400 to-purple-400 text-slate-900 font-bold text-lg py-4 rounded-xl hover:opacity-90 transition flex items-center justify-center gap-2">
-          Start My Journey ➔
-        </button>
+const PremiumAudioBooks = () => (
+  <div className="p-8 space-y-6 animate-in fade-in">
+    <div className="flex items-center gap-3 mb-6">
+      <div className="bg-gradient-to-r from-amber-400 to-orange-500 p-2 rounded-xl"><Headphones className="text-white"/></div>
+      <h2 className="text-3xl font-bold text-slate-800">Premium Audio NCERTs 🎧</h2>
+    </div>
+    <div className="bg-slate-900 rounded-3xl p-8 text-white flex flex-col md:flex-row items-center gap-8 shadow-2xl relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+      <div className="w-32 h-32 bg-slate-800 rounded-2xl flex items-center justify-center shrink-0 border border-slate-700 shadow-xl">
+        <Headphones size={48} className="text-amber-400"/>
       </div>
-    </motion.div>
+      <div className="flex-1 z-10">
+        <span className="bg-amber-500/20 text-amber-400 px-3 py-1 rounded-full text-xs font-bold border border-amber-500/30 uppercase tracking-wider mb-3 inline-block">Now Playing</span>
+        <h3 className="text-2xl font-bold mb-2">History: Class 11th - Chapter 1</h3>
+        <p className="text-slate-400 mb-6 max-w-lg">Listen to the complete summary of Ancient History while you travel. Narrated by top educators.</p>
+        <div className="flex items-center gap-4 w-full max-w-md">
+          <PlayCircle size={40} className="text-amber-400 hover:scale-110 transition cursor-pointer" />
+          <div className="flex-1 h-2 bg-slate-700 rounded-full overflow-hidden">
+            <div className="w-1/3 h-full bg-gradient-to-r from-amber-400 to-orange-500 rounded-full"></div>
+          </div>
+          <span className="text-sm text-slate-400 font-medium">12:45 / 45:00</span>
+        </div>
+      </div>
+    </div>
   </div>
 );
+
+const VIPMentorship = () => (
+  <div className="p-8 space-y-6 animate-in fade-in">
+    <div className="flex items-center gap-3 mb-6">
+      <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-2 rounded-xl"><UserPlus className="text-white"/></div>
+      <h2 className="text-3xl font-bold text-slate-800">VIP 1-on-1 Mentorship 🤝</h2>
+    </div>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {[
+        { name: 'Ravi Kumar (AIR 14)', exam: 'UPSC 2024', slots: '2 Slots Left' },
+        { name: 'Neha Singh', exam: 'SSC CGL Rank 8', slots: 'Available Today' }
+      ].map((mentor, i) => (
+        <div key={i} className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 flex flex-col md:flex-row items-center gap-6 hover:shadow-xl transition-all group">
+          <div className="w-24 h-24 bg-slate-100 rounded-full border-4 border-white shadow-lg shrink-0 overflow-hidden relative">
+            <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${mentor.name}`} alt="avatar" className="w-full h-full object-cover" />
+          </div>
+          <div className="flex-1 text-center md:text-left">
+            <h3 className="text-xl font-bold text-slate-800 mb-1">{mentor.name}</h3>
+            <p className="text-indigo-600 font-semibold text-sm mb-3">{mentor.exam}</p>
+            <div className="flex items-center justify-center md:justify-start gap-2 text-slate-500 text-sm mb-4">
+              <Calendar size={16}/> {mentor.slots}
+            </div>
+            <button className="w-full md:w-auto bg-slate-900 text-white px-6 py-2 rounded-xl font-bold hover:bg-indigo-600 transition">Book Zoom Session</button>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+const OnboardingModal = ({ onSubmit }: { onSubmit: (name: string, exam: string) => void }) => {
+  const [name, setName] = useState('');
+  const [exam, setExam] = useState('UPSC Civil Services');
+  
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-md"></div>
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 text-center overflow-hidden border border-slate-100"
+      >
+        <div className="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6 rotate-12">
+          <Sparkles size={32} />
+        </div>
+        <h2 className="text-3xl font-bold text-slate-800 mb-2">Welcome to PadhaiSathi</h2>
+        <p className="text-slate-500 text-sm mb-8">Let's personalize your learning path to get the best out of the platform.</p>
+        
+        <div className="space-y-4">
+          <input 
+            type="text" 
+            placeholder="What is your name?" 
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-xl px-4 py-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium"
+          />
+          <select 
+            value={exam}
+            onChange={(e) => setExam(e.target.value)}
+            className="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-xl px-4 py-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium appearance-none"
+          >
+            <option>UPSC Civil Services</option>
+            <option>SSC CGL</option>
+            <option>Banking (IBPS/SBI)</option>
+            <option>BPSC / State PCS</option>
+            <option>Railway (RRB)</option>
+            <option>Defence (NDA/CDS)</option>
+          </select>
+          
+          <button 
+            onClick={() => onSubmit(name || 'Student', exam)}
+            className="w-full mt-4 bg-indigo-600 text-white font-bold text-lg py-4 rounded-xl hover:bg-indigo-700 transition shadow-xl shadow-indigo-200 flex items-center justify-center gap-2"
+          >
+            Start My Journey ➔
+          </button>
+        </div>
+      </motion.div>
+    </div>
+  );
+};
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [showAssessment, setShowAssessment] = useState(false);
+  const [userName, setUserName] = useState('');
+  const [userExam, setUserExam] = useState('');
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
+  useEffect(() => {
+    const savedName = localStorage.getItem('ps_userName');
+    const savedExam = localStorage.getItem('ps_userExam');
+    if (savedName) {
+      setUserName(savedName);
+      setUserExam(savedExam || 'UPSC Civil Services');
+    } else {
+      setShowOnboarding(true);
+    }
+  }, []);
+
+  const handleOnboardingSubmit = (name: string, exam: string) => {
+    localStorage.setItem('ps_userName', name);
+    localStorage.setItem('ps_userExam', exam);
+    setUserName(name);
+    setUserExam(exam);
+    setShowOnboarding(false);
+  };
+
   const [input, setInput] = useState('');
   const [isRecording, setIsRecording] = useState(false);
   const [messages, setMessages] = useState<Message[]>([{ id: '1', text: "नमस्ते! मैं आपका पढ़ाई साथी AI हूँ। आज आप क्या पढ़ना चाहेंगे?", sender: 'ai', timestamp: new Date() }]);
@@ -403,11 +507,13 @@ export default function App() {
 
     const renderContent = () => {
     switch(activeTab) {
-      case 'dashboard': return <Dashboard onStartAssessment={() => setShowAssessment(true)} />;
+      case 'dashboard': return <Dashboard onStartAssessment={() => setShowOnboarding(true)} userName={userName} userExam={userExam} />;
       case 'library': return <LibraryView setTab={setActiveTab} />;
       case 'content': return <StudyContentViewer />;
       case 'revision': return <SmartRevision />;
       case 'videos': return <VideoContent />;
+      case 'audio': return <PremiumAudioBooks />;
+      case 'mentorship': return <VIPMentorship />;
       case 'focus': return <FocusTools />;
       case 'community': return <Community />;
       case 'jobs': return <JobAlerts />;
@@ -458,15 +564,20 @@ export default function App() {
           {[
             { id: 'dashboard', icon: LayoutDashboard, label: 'Roadmap & Dashboard' },
             { id: 'library', icon: Library, label: 'Study Library' },
+            { id: 'audio', icon: Headphones, label: 'Audio NCERTs', isPremium: true },
             { id: 'revision', icon: Brain, label: 'Smart Revision' },
             { id: 'videos', icon: Video, label: 'Summary Videos' },
             { id: 'study', icon: Zap, label: 'AI Chat Tutor' },
             { id: 'focus', icon: Clock, label: 'Focus Tools' },
             { id: 'community', icon: Users, label: 'Doubts & Peer Groups' },
+            { id: 'mentorship', icon: UserPlus, label: 'VIP Mentorship', isPremium: true },
             { id: 'jobs', icon: Bell, label: 'Job Notifications' },
           ].map((item) => (
-            <button key={item.id} onClick={() => setActiveTab(item.id)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium ${activeTab === item.id ? 'bg-indigo-50 text-indigo-700 shadow-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}>
-              <item.icon size={20} className={activeTab === item.id ? "text-indigo-600" : "text-slate-400"} /> {item.label}
+            <button key={item.id} onClick={() => setActiveTab(item.id)} className={`w-full flex justify-between items-center px-4 py-3 rounded-xl transition-all font-medium ${activeTab === item.id ? 'bg-indigo-50 text-indigo-700 shadow-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}>
+              <div className="flex items-center gap-3">
+                <item.icon size={20} className={activeTab === item.id ? "text-indigo-600" : "text-slate-400"} /> {item.label}
+              </div>
+              {item.isPremium && <Star size={14} className="text-amber-500 fill-amber-500" />}
             </button>
           ))}
         </div>
@@ -486,7 +597,7 @@ export default function App() {
       </main>
 
       {/* Overlays */}
-      {showAssessment && <SkillAssessmentModal onClose={() => setShowAssessment(false)} />}
+      {showOnboarding && <OnboardingModal onSubmit={handleOnboardingSubmit} />}
       
       {/* WhatsApp FAB */}
       <a 
