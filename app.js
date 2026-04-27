@@ -150,11 +150,19 @@ const app = {
             document.getElementById('sidebar').classList.add('hidden');
             document.getElementById('main-header').classList.add('hidden');
             document.getElementById('main-content').style.marginLeft = '0';
+        } else if(screenId === 'onboarding-screen' || screenId === 'login-screen') {
+            // Hide sidebar and header on auth/onboarding screens
+            document.getElementById('sidebar').classList.add('hidden');
+            document.getElementById('main-header').classList.add('hidden');
+            document.getElementById('main-content').style.marginLeft = '0';
         } else {
+            // Show sidebar and header for main app screens (dashboard etc.)
             document.getElementById('sidebar').classList.remove('hidden');
             document.getElementById('main-header').classList.remove('hidden');
             if(window.innerWidth >= 769) {
                 document.getElementById('main-content').style.marginLeft = '260px';
+            } else {
+                document.getElementById('main-content').style.marginLeft = '0';
             }
         }
         
