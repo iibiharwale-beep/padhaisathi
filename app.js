@@ -26,6 +26,13 @@ window.padhaiApp = {
             this.setupNavigation();
             this.setupSidebar();
             
+            const startBtn = document.getElementById('start-journey-btn');
+            if (startBtn) {
+                startBtn.addEventListener('click', function() {
+                    padhaiApp.finishOnboarding();
+                });
+            }
+            
             // Load persistent local app state
             try {
                 const savedState = localStorage.getItem('padhaiSathiState');
