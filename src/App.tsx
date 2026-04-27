@@ -68,27 +68,110 @@ const Dashboard = () => (
   </div>
 );
 
-const LibraryView = () => (
+const StudyContentViewer = () => (
+  <div className="p-8 space-y-8 animate-in fade-in bg-white m-8 rounded-3xl shadow-sm border border-slate-100">
+    <div className="border-b border-slate-100 pb-6 mb-6">
+      <h1 className="text-4xl font-extrabold text-slate-800 tracking-tight">UPSC Polity: Fundamental Rights</h1>
+      <div className="flex gap-3 mt-4">
+        <span className="bg-indigo-50 text-indigo-700 px-3 py-1 rounded-md text-sm font-bold">UPSC CSE</span>
+        <span className="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-md text-sm font-bold">Polity</span>
+        <span className="bg-amber-50 text-amber-700 px-3 py-1 rounded-md text-sm font-bold">Chapter 7</span>
+      </div>
+    </div>
+
+    <div className="space-y-12">
+      {/* 1. TOPIC NOTES */}
+      <section>
+        <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-2 mb-6"><Book className="text-indigo-600"/> 1. Topic Notes</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200">
+            <h3 className="font-bold text-lg mb-4 text-slate-800">💻 Computerized Version</h3>
+            <ul className="space-y-2 text-slate-600 text-sm list-disc pl-4">
+              <li><b>Part III</b> of the Constitution (Articles 12-35).</li>
+              <li>Described as the <b>Magna Carta of India</b>.</li>
+              <li>Justiciable in nature (Article 32 & 226).</li>
+              <li>Not absolute but qualified (Subject to reasonable restrictions).</li>
+              <li>Can be suspended during National Emergency (except Art 20 & 21).</li>
+            </ul>
+          </div>
+          <div className="bg-yellow-50/50 p-6 rounded-2xl border border-yellow-200 shadow-inner">
+            <h3 className="font-bold text-lg mb-4 text-slate-800 font-serif">✍️ Handmade Style Guide</h3>
+            <div className="text-slate-700 font-serif space-y-4">
+              <p><b>Mnemonic for Art 14-18 (Equality):</b><br/><span className="bg-yellow-200 px-1">"E-D-O-U-T"</span> (Equality, Discrimination, Opportunity, Untouchability, Titles)</p>
+              <div className="border-l-4 border-slate-800 pl-4 py-2 my-2">
+                <b>Flowchart: Suspension during Emergency</b><br/>
+                National Emergency ➡️ Art 19 Suspended automatically (if war/external aggression) ➡️ Other FRs suspended by Prez order (except 20, 21).
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 2. CHAPTER-WISE TEST */}
+      <section>
+        <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-2 mb-6"><PenTool className="text-rose-500"/> 2. Chapter-wise Test (Mini)</h2>
+        <div className="space-y-4">
+          <div className="border border-slate-200 rounded-xl p-4">
+            <p className="font-bold text-slate-800 mb-2">Q1 (Medium): Which Article cannot be suspended even during a National Emergency?</p>
+            <div className="grid grid-cols-2 gap-2 text-sm">
+              <button className="bg-slate-50 p-2 rounded-lg text-left hover:bg-slate-100">A) Article 19</button>
+              <button className="bg-emerald-50 border-emerald-200 border p-2 rounded-lg text-left font-bold text-emerald-800">B) Article 20 & 21 (✅ Correct)</button>
+              <button className="bg-slate-50 p-2 rounded-lg text-left hover:bg-slate-100">C) Article 14</button>
+              <button className="bg-slate-50 p-2 rounded-lg text-left hover:bg-slate-100">D) Article 32</button>
+            </div>
+            <p className="text-xs text-slate-500 mt-3"><b>Explanation:</b> 44th Amendment Act 1978 restricted the suspension of Article 20 and 21 during emergencies.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. TOPPER'S ADVICE */}
+      <section>
+        <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-2 mb-6"><Award className="text-yellow-500"/> 3. Topper's Advice</h2>
+        <div className="bg-gradient-to-br from-indigo-900 to-purple-900 rounded-2xl p-6 text-white">
+          <ul className="space-y-4">
+            <li className="flex gap-3"><Flame className="text-orange-400 shrink-0"/> <span><b>Secret Tip 1:</b> Article 14, 19, 21 ko "Golden Triangle" bolte hain. Inko hamesha Supreme Court judgments ke sath link karke padho (e.g. Puttaswamy case).</span></li>
+            <li className="flex gap-3"><Flame className="text-orange-400 shrink-0"/> <span><b>Secret Tip 2:</b> Ratta mat maaro! Exceptions par focus karo. UPSC humesha exceptions se sawal banata hai (Jaise Art 15(4) and 16(4)).</span></li>
+            <li className="flex gap-3"><Flame className="text-orange-400 shrink-0"/> <span><b>Secret Tip 3:</b> Mains ke liye Fundamental Rights vs DPSP ka debate tip of the tongue par hona chahiye.</span></li>
+          </ul>
+        </div>
+      </section>
+
+      {/* 4. EXAM CONNECT */}
+      <section>
+        <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-2 mb-6"><Target className="text-emerald-500"/> 4. Exam Connect</h2>
+        <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-6">
+          <p className="text-slate-700 mb-4"><b>Trend Analysis:</b> UPSC CSE Prelims mein har saal average <b>2-3 questions</b> Fundamental Rights se aate hi hain.</p>
+          <div className="flex gap-2">
+            <span className="bg-white px-3 py-1 rounded-md text-sm border border-emerald-200 font-semibold text-emerald-800">High Yielding Topic</span>
+            <span className="bg-white px-3 py-1 rounded-md text-sm border border-emerald-200 font-semibold text-emerald-800">Conceptual + Factual</span>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+);
+
+const LibraryView = ({ setTab }: { setTab: (t: string) => void }) => (
   <div className="p-8 space-y-8 animate-in fade-in">
     <h2 className="text-3xl font-bold text-slate-800">Complete Study Library 📚</h2>
     
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition cursor-pointer">
+      <div onClick={() => setTab('content')} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition cursor-pointer hover:border-indigo-300">
         <div className="text-blue-500 mb-4 bg-blue-50 w-12 h-12 flex items-center justify-center rounded-xl"><FileText size={24} /></div>
         <h3 className="font-bold text-lg text-slate-800">Handmade Notes</h3>
         <p className="text-slate-500 text-sm">Topper's handwritten PDFs</p>
       </div>
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition cursor-pointer">
+      <div onClick={() => setTab('content')} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition cursor-pointer hover:border-indigo-300">
         <div className="text-indigo-500 mb-4 bg-indigo-50 w-12 h-12 flex items-center justify-center rounded-xl"><Book size={24} /></div>
         <h3 className="font-bold text-lg text-slate-800">Computerized Notes</h3>
         <p className="text-slate-500 text-sm">Standard typed PDFs & NCERTs</p>
       </div>
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition cursor-pointer">
+      <div onClick={() => setTab('content')} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition cursor-pointer hover:border-indigo-300">
         <div className="text-rose-500 mb-4 bg-rose-50 w-12 h-12 flex items-center justify-center rounded-xl"><Newspaper size={24} /></div>
         <h3 className="font-bold text-lg text-slate-800">Daily Newspapers</h3>
         <p className="text-slate-500 text-sm">The Hindu, Indian Express</p>
       </div>
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition cursor-pointer">
+      <div onClick={() => setTab('content')} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition cursor-pointer hover:border-indigo-300">
         <div className="text-emerald-500 mb-4 bg-emerald-50 w-12 h-12 flex items-center justify-center rounded-xl"><Layers size={24} /></div>
         <h3 className="font-bold text-lg text-slate-800">All Subjects</h3>
         <p className="text-slate-500 text-sm">Topic-wise categorized content</p>
@@ -266,10 +349,11 @@ export default function App() {
     }, 1000);
   };
 
-  const renderContent = () => {
+    const renderContent = () => {
     switch(activeTab) {
       case 'dashboard': return <Dashboard />;
-      case 'library': return <LibraryView />;
+      case 'library': return <LibraryView setTab={setActiveTab} />;
+      case 'content': return <StudyContentViewer />;
       case 'revision': return <SmartRevision />;
       case 'videos': return <VideoContent />;
       case 'focus': return <FocusTools />;
