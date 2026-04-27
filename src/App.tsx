@@ -599,15 +599,22 @@ export default function App() {
       {/* Overlays */}
       {showOnboarding && <OnboardingModal onSubmit={handleOnboardingSubmit} />}
       
-      {/* WhatsApp FAB */}
+      {/* WhatsApp Premium Help Button */}
       <a 
         href="https://wa.me/916207715021" 
         target="_blank" 
         rel="noreferrer"
-        className="fixed bottom-6 right-6 bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform z-40 flex items-center justify-center animate-bounce"
+        className="fixed bottom-6 left-6 bg-gradient-to-r from-[#1E293B] to-[#0F172A] border border-slate-700/50 text-white px-5 py-3 rounded-full shadow-2xl hover:shadow-[#25D366]/20 hover:border-[#25D366]/50 transition-all z-50 flex items-center justify-center gap-3 group"
         title="Chat on WhatsApp"
       >
-        <MessageCircle size={32} />
+        <div className="relative flex items-center justify-center">
+          <div className="absolute inset-0 bg-[#25D366] rounded-full blur-md opacity-50 group-hover:opacity-100 transition-opacity"></div>
+          <MessageCircle size={22} className="relative text-[#25D366] z-10" />
+        </div>
+        <div className="flex flex-col text-left">
+          <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold leading-tight">24/7 Support</span>
+          <span className="text-sm font-bold leading-tight">Chat on WhatsApp</span>
+        </div>
       </a>
     </div>
   );
