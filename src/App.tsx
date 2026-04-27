@@ -4,7 +4,7 @@ import { supabase } from './lib/supabaseClient';
 import { 
   BookOpen, Mic, Send, History, Settings, LogOut, Search, Book, PenTool, Award, ChevronRight, Brain, Sparkles, Clock, Play, Pause, RotateCcw, Download, Home, FileText,
   Map, Target, Zap, LayoutDashboard, Library, Layers, Video, Users, Bell, Newspaper, Image as ImageIcon, Flame, CheckCircle2, ShieldAlert, MessageCircle,
-  Headphones, UserPlus, Calendar, PlayCircle, Star
+  Headphones, UserPlus, Calendar, PlayCircle, Star, ChevronLeft
 } from 'lucide-react';
 
 interface Message { id: string; text: string; sender: 'user' | 'ai'; timestamp: Date; }
@@ -203,21 +203,76 @@ const LibraryView = ({ setTab }: { setTab: (t: string) => void }) => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {materials.map((mat) => (
-            <div key={mat.id} className="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm hover:shadow-lg transition">
-              <span className={`text-xs font-bold px-2 py-1 rounded-md uppercase ${mat.type === 'handmade_pdf' ? 'bg-amber-100 text-amber-700' : mat.type === 'mindmap' ? 'bg-rose-100 text-rose-700' : 'bg-blue-100 text-blue-700'}`}>
-                {mat.type.replace('_', ' ')}
-              </span>
-              <h4 className="text-lg font-bold text-slate-800 mt-3">{mat.title}</h4>
+            <div key={mat.id} onClick={() => setTab('pdf_viewer')} className="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm hover:shadow-lg transition cursor-pointer group hover:border-indigo-300">
+              <div className="flex justify-between items-start mb-2">
+                <span className={`text-xs font-bold px-2 py-1 rounded-md uppercase ${mat.type === 'handmade_pdf' ? 'bg-amber-100 text-amber-700' : mat.type === 'mindmap' ? 'bg-rose-100 text-rose-700' : 'bg-blue-100 text-blue-700'}`}>
+                  {mat.type.replace('_', ' ')}
+                </span>
+                {mat.language && (
+                  <span className={`text-[10px] font-bold px-2 py-1 rounded-full border ${mat.language === 'Hindi' ? 'bg-orange-50 text-orange-600 border-orange-200' : 'bg-slate-50 text-slate-600 border-slate-200'}`}>
+                    {mat.language}
+                  </span>
+                )}
+              </div>
+              <h4 className="text-lg font-bold text-slate-800 mt-3 group-hover:text-indigo-600 transition">{mat.title}</h4>
               <p className="text-sm text-slate-500 mt-1">{mat.description}</p>
-              <div className="mt-4 flex justify-between items-center text-xs font-semibold">
+              <div className="mt-4 flex justify-between items-center text-xs font-semibold border-t border-slate-100 pt-3">
                 <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded-md">{mat.subject}</span>
-                <button className="text-indigo-600 hover:underline flex items-center gap-1">Open <ChevronRight size={14}/></button>
+                <button className="text-indigo-600 hover:underline flex items-center gap-1">Open PDF <ChevronRight size={14}/></button>
               </div>
             </div>
           ))}
           {materials.length === 0 && <p className="text-slate-500 italic">No materials found in the database yet.</p>}
         </div>
       )}
+    </div>
+  );
+};
+
+const PDFViewerMock = ({ onExit }: { onExit: () => void }) => {
+  return (
+    <div className="absolute inset-0 bg-slate-900 z-50 flex flex-col animate-in fade-in zoom-in-95 duration-300">
+      <div className="bg-slate-800 text-white px-6 py-4 flex justify-between items-center shadow-lg">
+        <div className="flex items-center gap-4">
+          <Book size={24} className="text-indigo-400" />
+          <h1 className="text-xl font-bold tracking-wider">UPSC Geography Notes (Hindi)</h1>
+          <span className="bg-orange-500/20 text-orange-400 border border-orange-500/50 text-xs font-bold px-2 py-1 rounded">HINDI MEDIUM</span>
+        </div>
+        <button onClick={onExit} className="text-slate-300 hover:text-white bg-slate-700 px-4 py-2 rounded-lg transition font-bold">Close PDF</button>
+      </div>
+
+      <div className="flex-1 overflow-y-auto p-8 flex justify-center bg-slate-100">
+        <div className="bg-white w-full max-w-4xl min-h-[1000px] shadow-2xl p-12 text-slate-800 border border-slate-300">
+          <h1 className="text-4xl font-black text-center mb-4 underline decoration-4 decoration-indigo-500">विश्व भूगोल - महत्वपूर्ण नोट्स</h1>
+          <p className="text-center text-slate-500 font-bold mb-12 uppercase tracking-widest">Target UPSC Prelims 2024</p>
+
+          <h2 className="text-2xl font-bold bg-indigo-50 border-l-4 border-indigo-600 pl-4 py-2 mb-6">1. महासागर की धाराएं (Ocean Currents)</h2>
+          <p className="text-lg leading-relaxed mb-6 font-medium text-slate-700">
+            महासागरीय धाराएँ (Ocean currents) महासागर के जल का एक निश्चित दिशा में निरंतर प्रवाह है। ये दो प्रकार की होती हैं: गर्म जलधारा और ठंडी जलधारा।
+          </p>
+          <ul className="list-disc pl-8 space-y-4 text-lg mb-8 text-slate-700 font-medium">
+            <li><b>गल्फ स्ट्रीम (Gulf Stream):</b> यह अटलांटिक महासागर की एक प्रमुख गर्म जलधारा है।</li>
+            <li><b>लैब्राडोर धारा (Labrador Current):</b> यह एक ठंडी जलधारा है जो न्यूफाउंडलैंड के पास गल्फ स्ट्रीम से मिलती है, जिससे वहां घना कोहरा बनता है (जो मछली पकड़ने के लिए बहुत अच्छा होता है)।</li>
+            <li><b>एल नीनो (El Nino):</b> पेरू तट के पास प्रशांत महासागर में गर्म जलधारा का विकास, जो भारतीय मानसून को कमजोर करता है।</li>
+          </ul>
+
+          <h2 className="text-2xl font-bold bg-indigo-50 border-l-4 border-indigo-600 pl-4 py-2 mb-6">2. याद रखने की ट्रिक (Mnemonic)</h2>
+          <div className="bg-yellow-100 border border-yellow-400 p-6 rounded-xl mb-8">
+            <p className="text-xl font-bold text-yellow-800">ट्रिक: ठंडी जलधाराओं को कैसे याद रखें?</p>
+            <p className="text-2xl font-black text-red-600 mt-2 tracking-wider">"हम बोले ग्रीन बगुला क्यों केला फ़ेंक रहा है"</p>
+            <p className="text-lg mt-4 text-slate-700 font-medium">
+              हम - हम्बोल्ट (Humboldt)<br/>
+              ले - लैब्राडोर (Labrador)<br/>
+              ग्रीन - ग्रीनलैंड (Greenland)<br/>
+              बगुला - बेंगुएला (Benguela)<br/>
+              क्यों - क्युराइल (Kurile)<br/>
+              केला - कैलिफोर्निया (California)<br/>
+              फ़ेंक - फॉकलैंड (Falkland)
+            </p>
+          </div>
+          <p className="text-center text-slate-400 font-bold mt-20">Page 1 of 45</p>
+        </div>
+      </div>
     </div>
   );
 };
@@ -705,10 +760,26 @@ const OnboardingModal = ({ onSubmit }: { onSubmit: (name: string, exam: string) 
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [history, setHistory] = useState<string[]>(['dashboard']);
   const [showAssessment, setShowAssessment] = useState(false);
   const [userName, setUserName] = useState('');
   const [userExam, setUserExam] = useState('');
   const [showOnboarding, setShowOnboarding] = useState(false);
+
+  const navigateTo = (tab: string) => {
+    if (tab === activeTab) return;
+    setHistory(prev => [...prev, tab]);
+    setActiveTab(tab);
+  };
+
+  const goBack = () => {
+    if (history.length <= 1) return;
+    const newHistory = [...history];
+    newHistory.pop();
+    const prevTab = newHistory[newHistory.length - 1];
+    setHistory(newHistory);
+    setActiveTab(prevTab);
+  };
 
   useEffect(() => {
     const savedName = localStorage.getItem('ps_userName');
@@ -769,9 +840,10 @@ export default function App() {
     const renderContent = () => {
     switch(activeTab) {
       case 'dashboard': return <Dashboard onStartAssessment={() => setShowOnboarding(true)} userName={userName} userExam={userExam} />;
-      case 'library': return <LibraryView setTab={setActiveTab} />;
+      case 'library': return <LibraryView setTab={navigateTo} />;
       case 'content': return <StudyContentViewer />;
-      case 'tests': return <TestSeriesPYQ setTab={setActiveTab} />;
+      case 'tests': return <TestSeriesPYQ setTab={navigateTo} />;
+      case 'pdf_viewer': return <PDFViewerMock onExit={goBack} />;
       case 'revision': return <SmartRevision />;
       case 'videos': return <VideoContent />;
       case 'audio': return <PremiumAudioBooks />;
@@ -836,7 +908,7 @@ export default function App() {
             { id: 'mentorship', icon: UserPlus, label: 'VIP Mentorship', isPremium: true },
             { id: 'jobs', icon: Bell, label: 'Job Notifications' },
           ].map((item) => (
-            <button key={item.id} onClick={() => setActiveTab(item.id)} className={`w-full flex justify-between items-center px-4 py-3 rounded-xl transition-all font-medium ${activeTab === item.id ? 'bg-indigo-50 text-indigo-700 shadow-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}>
+            <button key={item.id} onClick={() => navigateTo(item.id)} className={`w-full flex justify-between items-center px-4 py-3 rounded-xl transition-all font-medium ${activeTab === item.id ? 'bg-indigo-50 text-indigo-700 shadow-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}>
               <div className="flex items-center gap-3">
                 <item.icon size={20} className={activeTab === item.id ? "text-indigo-600" : "text-slate-400"} /> {item.label}
               </div>
@@ -850,7 +922,21 @@ export default function App() {
       </nav>
       <main className="flex-1 flex flex-col relative bg-slate-50/50">
         <header className="h-16 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-8 z-10">
-          <div className="flex items-center gap-2 text-slate-500 text-sm font-medium"><span>PadhaiSathi</span><ChevronRight size={14} /><span className="text-indigo-600 capitalize">{activeTab.replace('-', ' ')}</span></div>
+          <div className="flex items-center gap-4">
+            {history.length > 1 && (
+              <button 
+                onClick={goBack} 
+                className="flex items-center gap-1 text-indigo-600 hover:bg-indigo-50 px-3 py-1.5 rounded-lg transition-all font-bold text-sm border border-indigo-100 shadow-sm"
+              >
+                <ChevronLeft size={18} /> Back
+              </button>
+            )}
+            <div className="flex items-center gap-2 text-slate-500 text-sm font-medium">
+              <span>PadhaiSathi</span>
+              <ChevronRight size={14} />
+              <span className="text-indigo-600 capitalize">{activeTab.replace('-', ' ').replace('_', ' ')}</span>
+            </div>
+          </div>
           <div className="flex items-center gap-4">
             <div className="relative"><Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"/><input type="text" placeholder="Global search..." className="bg-slate-100 pl-10 pr-4 py-2 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 border-none w-64"/></div>
             <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 shadow-sm cursor-pointer" />
@@ -861,7 +947,7 @@ export default function App() {
 
       {/* Overlays */}
       {showOnboarding && <OnboardingModal onSubmit={handleOnboardingSubmit} />}
-      {activeTab === 'live_test' && <LiveTestEngine onExit={() => setActiveTab('tests')} />}
+      {activeTab === 'live_test' && <LiveTestEngine onExit={goBack} />}
       
       {/* WhatsApp Premium Help Button */}
       <a 
