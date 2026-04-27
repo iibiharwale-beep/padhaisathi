@@ -615,130 +615,153 @@ const TestSeriesPYQ = ({ setTab }: { setTab: (t: string) => void }) => {
       ]);
       if (testsRes.data) setTests(testsRes.data);
       if (examsRes.data) setExams(examsRes.data);
-      setLoading(false);
+  const [tests, setTests] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchExams = async () => {
+      const { data } = await supabase.from('exams').select('*');
+      if (data) setExams(data);
     };
-    fetchData();
+    fetchExams();
   }, []);
 
-  const filteredTests = selectedExamId 
-    ? tests.filter(t => t.exam_id === selectedExamId)
-    : tests;
+  useEffect(() => {
+    const fetchTests = async () => {
+      setLoading(true);
+      let query = supabase.from('test_series').select('*');
+      if (selectedExamId) query = query.eq('exam_id', selectedExamId);
+      
+      const { data } = await query.order('created_at', { ascending: false });
+      if (data) setTests(data);
+      setLoading(false);
+    };
+    fetchTests();
+  }, [selectedExamId]);
 
-  const pyqs = filteredTests.filter(t => t.type === 'pyq');
-  const mocks = filteredTests.filter(t => t.type === 'mock');
+  const pyqs = tests.filter(t => t.type === 'pyq');
+  const mocks = tests.filter(t => t.type === 'mock');
 
   return (
-  <div className="p-8 space-y-8 animate-in fade-in">
-    <div className="flex justify-between items-end mb-6">
+  <div className="p-8 space-y-8 animate-in fade-in bg-slate-50/50 min-h-full">
+    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
       <div>
-        <h2 className="text-4xl font-black text-slate-800 flex items-center gap-3 tracking-tight">
-          <Target className="text-rose-500 w-10 h-10"/> Mega Test Series
-        </h2>
-        <p className="text-slate-500 mt-2 font-medium">India's most realistic exam simulation platform.</p>
+        <h2 className="text-4xl font-black text-slate-800 tracking-tight">Test Series & PYQs 🏆</h2>
+        <p className="text-slate-500 font-medium italic">India's most accurate exam simulation engine.</p>
       </div>
-      <div className="hidden md:flex gap-4">
-        <div className="bg-white px-4 py-2 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-3">
-          <Users className="text-indigo-500" size={20}/>
-          <div>
-            <p className="text-[10px] uppercase font-bold text-slate-400 leading-none">Active Students</p>
-            <p className="text-sm font-bold text-slate-700">12,450+</p>
-          </div>
+      <div className="flex gap-3">
+        <div className="bg-indigo-600 text-white px-4 py-2 rounded-full text-xs font-bold shadow-lg shadow-indigo-100">
+          {tests.length} Tests Available
         </div>
       </div>
     </div>
 
-    {/* Exam Categories Horizontal Scroll */}
-    <div className="flex gap-3 overflow-x-auto pb-4 no-scrollbar">
+    {/* Exam Folders */}
+    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
       <button 
         onClick={() => setSelectedExamId(null)}
-        className={`px-6 py-3 rounded-2xl font-bold whitespace-nowrap transition-all shadow-sm border ${!selectedExamId ? 'bg-indigo-600 text-white border-indigo-600 shadow-indigo-200' : 'bg-white text-slate-600 border-slate-100 hover:border-indigo-300'}`}
+        className={`p-6 rounded-[2.5rem] border-2 transition-all flex flex-col items-center gap-3 text-center group ${!selectedExamId ? 'bg-slate-900 border-slate-900 text-white shadow-2xl' : 'bg-white border-slate-100 text-slate-600 hover:border-indigo-300 shadow-sm'}`}
       >
-        All Exams
+        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all ${!selectedExamId ? 'bg-white/10' : 'bg-slate-50 group-hover:bg-indigo-50 text-indigo-600'}`}>
+          <Layers size={28}/>
+        </div>
+        <div>
+          <span className="font-black text-xs uppercase tracking-widest block">All Exams</span>
+          <span className={`text-[10px] font-bold ${!selectedExamId ? 'text-slate-400' : 'text-slate-300'}`}>Full Access</span>
+        </div>
       </button>
-      {exams.map((exam) => (
+      {exams.map(exam => (
         <button 
           key={exam.id}
           onClick={() => setSelectedExamId(exam.id)}
-          className={`px-6 py-3 rounded-2xl font-bold whitespace-nowrap transition-all shadow-sm border ${selectedExamId === exam.id ? 'bg-indigo-600 text-white border-indigo-600 shadow-indigo-200' : 'bg-white text-slate-600 border-slate-100 hover:border-indigo-300'}`}
+          className={`p-6 rounded-[2.5rem] border-2 transition-all flex flex-col items-center gap-3 text-center group ${selectedExamId === exam.id ? 'bg-indigo-600 border-indigo-600 text-white shadow-2xl shadow-indigo-200' : 'bg-white border-slate-100 text-slate-600 hover:border-indigo-300 shadow-sm'}`}
         >
-          {exam.exam_name}
+          <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all ${selectedExamId === exam.id ? 'bg-white/10' : 'bg-indigo-50 text-indigo-600'}`}>
+            {exam.exam_name.includes('UPSC') ? <Shield size={28}/> : exam.exam_name.includes('BPSC') ? <Award size={28}/> : <Zap size={28}/>}
+          </div>
+          <div>
+            <span className="font-black text-xs uppercase tracking-widest block line-clamp-1">{exam.exam_name}</span>
+            <span className={`text-[10px] font-bold ${selectedExamId === exam.id ? 'text-indigo-100' : 'text-slate-400'}`}>{exam.category}</span>
+          </div>
         </button>
       ))}
     </div>
 
     {loading ? (
-      <div className="flex justify-center p-20"><div className="w-12 h-12 border-4 border-rose-100 border-t-rose-600 rounded-full animate-spin"></div></div>
+      <div className="flex justify-center p-20"><div className="w-12 h-12 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin"></div></div>
     ) : (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
       {/* 20 Years PYQ Section */}
-      <div className="bg-gradient-to-br from-white to-indigo-50/30 p-8 rounded-[2rem] shadow-xl shadow-indigo-500/5 border border-white relative overflow-hidden group">
-        <div className="absolute -top-12 -right-12 w-48 h-48 bg-indigo-500/5 rounded-full blur-3xl group-hover:bg-indigo-500/10 transition-all duration-700"></div>
+      <div className="bg-white p-8 rounded-[3rem] shadow-xl shadow-slate-200/50 border border-slate-100 relative overflow-hidden group flex flex-col">
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
-            <div className="bg-indigo-600 p-4 rounded-2xl shadow-lg shadow-indigo-200"><History className="text-white"/></div>
+            <div className="bg-indigo-600 p-4 rounded-2xl shadow-lg shadow-indigo-100"><History className="text-white"/></div>
             <div>
-              <h3 className="text-2xl font-bold text-slate-800">Previous Year Questions</h3>
-              <p className="text-xs font-bold text-indigo-500 uppercase tracking-widest">20 Years Bank</p>
+              <h3 className="text-2xl font-black text-slate-800">Previous Papers</h3>
+              <p className="text-xs font-bold text-indigo-500 uppercase tracking-widest">20 Years Question Bank</p>
             </div>
           </div>
         </div>
         
-        <div className="space-y-4 h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+        <div className="space-y-4 flex-1 overflow-y-auto pr-2 custom-scrollbar max-h-[500px]">
           {pyqs.map((pyq) => (
-            <div key={pyq.id} onClick={() => setTab('live_test', { testId: pyq.id })} className="flex justify-between items-center p-5 rounded-2xl bg-white border border-slate-100 hover:border-indigo-400 transition-all cursor-pointer hover:shadow-md group/item">
+            <div key={pyq.id} onClick={() => setTab('live_test', { testId: pyq.id })} className="flex justify-between items-center p-5 rounded-2xl bg-slate-50/50 border border-transparent hover:border-indigo-400 hover:bg-white transition-all cursor-pointer hover:shadow-xl group/item">
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center font-bold text-slate-400 group-hover/item:bg-indigo-50 group-hover/item:text-indigo-600 transition-colors">{pyq.year?.slice(-2) || 'PY'}</div>
+                <div className="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center font-black text-slate-400 group-hover/item:text-indigo-600 transition-colors">{pyq.year?.slice(-2) || 'PY'}</div>
                 <div>
-                  <span className="font-bold text-slate-700 block">{pyq.name}</span>
-                  <span className="text-[10px] font-bold text-slate-400 uppercase">{pyq.language || 'English'} Medium</span>
+                  <span className="font-black text-slate-700 block text-sm">{pyq.name}</span>
+                  <span className={`text-[10px] font-black px-2 py-0.5 rounded-full border ${pyq.language === 'Hindi' ? 'bg-orange-50 text-orange-600 border-orange-100' : 'bg-slate-100 text-slate-500 border-slate-200'}`}>{pyq.language.toUpperCase()} MEDIUM</span>
                 </div>
               </div>
-              <ChevronRight size={18} className="text-slate-300 group-hover/item:text-indigo-500 transition-transform group-hover/item:translate-x-1"/>
+              <div className="bg-white p-2 rounded-full shadow-sm group-hover/item:bg-indigo-600 group-hover/item:text-white transition-all">
+                <ChevronRight size={18}/>
+              </div>
             </div>
           ))}
-          {pyqs.length === 0 && (
-            <div className="flex flex-col items-center justify-center h-full text-slate-400">
-              <History size={48} className="mb-2 opacity-20"/>
-              <p className="font-medium italic">No PYQs for this category yet.</p>
-            </div>
-          )}
+          {pyqs.length === 0 && <p className="text-center text-slate-400 italic py-20">No papers found</p>}
         </div>
-        <button onClick={() => setTab('live_test')} className="w-full mt-6 bg-indigo-600 text-white font-black py-4 rounded-2xl hover:bg-indigo-700 transition shadow-lg shadow-indigo-100 flex items-center justify-center gap-2">
-          Start Sample PYQ <ChevronRight size={20}/>
+        <button onClick={() => setTab('live_test')} className="w-full mt-8 bg-indigo-600 text-white font-black py-5 rounded-2xl hover:bg-indigo-700 transition shadow-xl shadow-indigo-100 flex items-center justify-center gap-3 text-lg">
+          Explore All PYQs <ArrowRight size={20}/>
         </button>
       </div>
 
       {/* Full Length Mocks */}
-      <div className="bg-gradient-to-br from-white to-rose-50/30 p-8 rounded-[2rem] shadow-xl shadow-rose-500/5 border border-white relative overflow-hidden group">
-        <div className="absolute -top-12 -right-12 w-48 h-48 bg-rose-500/5 rounded-full blur-3xl group-hover:bg-rose-500/10 transition-all duration-700"></div>
+      <div className="bg-white p-8 rounded-[3rem] shadow-xl shadow-slate-200/50 border border-slate-100 relative overflow-hidden group flex flex-col">
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
-            <div className="bg-rose-600 p-4 rounded-2xl shadow-lg shadow-rose-200"><Zap className="text-white"/></div>
+            <div className="bg-rose-600 p-4 rounded-2xl shadow-lg shadow-rose-100"><Zap className="text-white"/></div>
             <div>
-              <h3 className="text-2xl font-bold text-slate-800">Live Mock Simulations</h3>
-              <p className="text-xs font-bold text-rose-500 uppercase tracking-widest">TCS/NTA Pattern</p>
+              <h3 className="text-2xl font-black text-slate-800">Live Mock Tests</h3>
+              <p className="text-xs font-bold text-rose-500 uppercase tracking-widest">NTA / TCS Digital Pattern</p>
             </div>
           </div>
-          <span className="bg-rose-100 text-rose-600 px-3 py-1 rounded-full text-[10px] font-black animate-pulse">LIVE NOW</span>
+          <span className="bg-rose-100 text-rose-600 px-4 py-1.5 rounded-full text-[10px] font-black animate-pulse border border-rose-200">LIVE NOW</span>
         </div>
         
-        <div className="space-y-4 h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+        <div className="space-y-4 flex-1 overflow-y-auto pr-2 custom-scrollbar max-h-[500px]">
           {mocks.map((mock) => (
-            <div key={mock.id} onClick={() => setTab('live_test', { testId: mock.id })} className="flex justify-between items-center p-5 rounded-2xl bg-white border border-slate-100 hover:border-rose-400 transition-all cursor-pointer hover:shadow-md group/item">
+            <div key={mock.id} onClick={() => setTab('live_test', { testId: mock.id })} className="flex justify-between items-center p-5 rounded-2xl bg-slate-50/50 border border-transparent hover:border-rose-400 hover:bg-white transition-all cursor-pointer hover:shadow-xl group/item">
               <div className="flex items-center gap-4">
-                <div className={`w-3 h-3 rounded-full ${mock.status === 'live' ? 'bg-rose-500 animate-ping' : 'bg-slate-200'}`}></div>
+                <div className="relative">
+                  <div className={`w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center`}>
+                    <Play size={18} className={mock.status === 'live' ? 'text-rose-600 fill-rose-600' : 'text-slate-300'}/>
+                  </div>
+                  {mock.status === 'live' && <div className="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 border-2 border-white rounded-full animate-ping"></div>}
+                </div>
                 <div>
-                  <span className="font-bold text-slate-700 block">{mock.name}</span>
+                  <span className="font-black text-slate-700 block text-sm">{mock.name}</span>
                   <div className="flex gap-2 items-center mt-1">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase">{mock.total_questions} Questions</span>
-                    <span className="w-1 h-1 bg-slate-200 rounded-full"></span>
-                    <span className="text-[10px] font-bold text-slate-400 uppercase">{mock.duration_minutes} Mins</span>
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">{mock.total_questions} Qs</span>
+                    <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">{mock.duration_minutes} Mins</span>
+                    <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
+                    <span className={`text-[10px] font-black ${mock.status === 'live' ? 'text-rose-600' : 'text-slate-400'}`}>{mock.status.toUpperCase()}</span>
                   </div>
                 </div>
               </div>
-              <span className={`text-[10px] font-black px-2 py-1 rounded-md ${mock.status === 'live' ? 'bg-rose-50 text-rose-600' : 'bg-slate-50 text-slate-400'}`}>
-                {mock.status.toUpperCase()}
-              </span>
+              <div className="bg-white p-2 rounded-full shadow-sm group-hover/item:bg-rose-600 group-hover/item:text-white transition-all">
+                <ChevronRight size={18}/>
+              </div>
             </div>
           ))}
           {mocks.length === 0 && (
