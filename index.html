@@ -54,7 +54,7 @@
             <div id="screens-container">
                 
                 <!-- Authentication Screen -->
-                <section id="login-screen" class="screen">
+                <section id="login-screen" class="screen active">
                     <div class="login-container glass-panel" style="position: relative; overflow: hidden; padding: 40px 30px;">
                         <div class="logo-area" style="margin-bottom: 30px;">
                             <i class="fa-solid fa-graduation-cap glow-icon"></i>
@@ -124,7 +124,7 @@
 
                         <!-- Guest Action -->
                         <div style="margin-top: 30px; border-top: 1px solid var(--glass-border); padding-top: 20px;">
-                            <button class="secondary-btn w-full" onclick="padhaiApp.navigate('dashboard-screen')">
+                            <button class="secondary-btn w-full" onclick="padhaiApp.navigateGuest()">
                                 <i class="fa-solid fa-arrow-right"></i> Continue as Guest
                             </button>
                             <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 10px;">
@@ -136,7 +136,7 @@
                 </section>
 
                 <!-- Onboarding (Skill Assessment) -->
-                <section id="onboarding-screen" class="screen active">
+                <section id="onboarding-screen" class="screen">
                     <div class="onboarding-container glass-panel">
                         <h2>Skill Assessment 🎯</h2>
                         <p>Let's personalize your learning path. What exam are you targeting?</p>
@@ -277,7 +277,7 @@
                         </div>
                     </div>
                     <div class="exam-footer">
-                        <button class="secondary-btn" onclick="padhaiApp.navigate('dashboard-screen')">Exit</button>
+                        <button class="secondary-btn" onclick="padhaiApp.navigateGuest()">Exit</button>
                         <div class="action-btns">
                             <button class="secondary-btn">Mark for Review</button>
                             <button class="secondary-btn">Clear</button>
@@ -305,7 +305,7 @@
                                 </div>
                             </div>
                         </div>
-                        <button class="primary-btn mt-4 w-full" onclick="padhaiApp.navigate('dashboard-screen')">Back to Home</button>
+                        <button class="primary-btn mt-4 w-full" onclick="padhaiApp.navigateGuest()">Back to Home</button>
                     </div>
                 </section>
 
@@ -627,6 +627,7 @@
     <script src="padhai_app.js"></script>
 </body>
 </html>
+
 
 
 
