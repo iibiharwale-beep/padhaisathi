@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1e1e2f">
+    <title>PadhaiSathi - Ultimate Exam Expert</title>
+    <link rel="stylesheet" href="styles.css?v=2">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="icon.png">
+    
+</head>
+<body>
+    <!-- App Container -->
+    <div id="app">
+        <!-- Sidebar Navigation -->
+        <nav id="sidebar" class="sidebar hidden">
+            <div class="sidebar-header">
+                <h2><i class="fa-solid fa-graduation-cap"></i> PadhaiSathi</h2>
+                <button id="close-sidebar-btn" class="icon-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <ul class="nav-links">
+                <li data-target="dashboard" class="active"><i class="fa-solid fa-house"></i> Home</li>
+                <li data-target="onboarding-screen"><i class="fa-solid fa-road"></i> Custom Roadmap</li>
+                <li data-target="test-series-screen"><i class="fa-solid fa-laptop-file"></i> Test Series</li>
+                <li data-target="test-series-screen"><i class="fa-solid fa-stopwatch"></i> Daily Quiz</li>
+                <li data-target="current-affairs-screen"><i class="fa-solid fa-newspaper"></i> Current Affairs</li>
+                <li data-target="daily-newspapers-screen"><i class="fa-solid fa-file-invoice"></i> Daily Newspapers</li>
+                <li data-target="study-material-screen"><i class="fa-solid fa-book-open"></i> Notes & Videos</li>
+                <li data-target="pyq-tracker-screen"><i class="fa-solid fa-clock-rotate-left"></i> PYQ Tracker</li>
+                <li data-target="focus-tools-screen"><i class="fa-solid fa-clock"></i> Focus Tools</li>
+                <li data-target="smart-revision-screen"><i class="fa-solid fa-brain"></i> Smart Revision</li>
+                <li data-target="doubt-solver-screen"><i class="fa-solid fa-camera"></i> Doubt Solver</li>
+                <li data-target="exam-alerts-screen"><i class="fa-solid fa-bell"></i> Exam Alerts</li>
+                <li data-target="help-screen" style="border-top: 1px solid var(--glass-border); margin-top: 10px; padding-top: 15px;"><i class="fa-solid fa-circle-question text-accent"></i> Help & Support</li>
+            </ul>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main id="main-content">
+            <!-- Header -->
+            <header class="app-header hidden" id="main-header">
+                <button id="menu-btn" class="icon-btn"><i class="fa-solid fa-bars"></i></button>
+                <div class="header-title">PadhaiSathi <span class="user-exam-display badge" style="font-size: 0.7rem; background: var(--primary); padding: 2px 8px; border-radius: 10px; margin-left: 5px; vertical-align: middle;"></span></div>
+                <div class="header-actions">
+                    <div class="streak-badge"><i class="fa-solid fa-fire"></i> <span id="streak-count">12</span></div>
+                    <button class="icon-btn profile-btn" onclick="padhaiApp.logout()"><i class="fa-solid fa-right-from-bracket"></i></button>
+                </div>
+            </header>
+
+            <!-- Screens -->
+            <div id="screens-container">
+                
+                <!-- Authentication Screen -->
+                <section id="login-screen" class="screen">
+                    <div class="login-container glass-panel" style="position: relative; overflow: hidden; padding: 40px 30px;">
+                        <div class="logo-area" style="margin-bottom: 30px;">
+                            <i class="fa-solid fa-graduation-cap glow-icon"></i>
+                            <h1>PadhaiSathi</h1>
+                            <p style="font-size: 0.9rem; color: var(--text-muted);">Ultimate Exam Expert</p>
+                        </div>
+
+                        <!-- Login View -->
+                        <div id="auth-login-view">
+                            <h2 style="margin-bottom: 20px; font-size: 1.5rem;">Welcome Back</h2>
+                            <div style="display: flex; flex-direction: column; gap: 15px;">
+                                <input type="text" id="login-email" class="auth-input" placeholder="Email or Phone Number">
+                                <input type="password" id="login-pass" class="auth-input" placeholder="Password">
+                                <div style="display: flex; justify-content: flex-end;">
+                                    <span class="auth-link" onclick="padhaiApp.toggleAuthView('forgot')">Forgot Password?</span>
+                                </div>
+                                <button class="primary-btn w-full" onclick="padhaiApp.handleAuth('login')">Login</button>
+                            </div>
+                            
+                            <div class="auth-divider"><span>OR</span></div>
+                            
+                            <div class="login-buttons">
+                                <button class="social-btn google" onclick="padhaiApp.handleAuth('social')"><i class="fa-brands fa-google"></i> Google</button>
+                                <button class="social-btn facebook" onclick="padhaiApp.handleAuth('social')"><i class="fa-brands fa-facebook"></i> Facebook</button>
+                            </div>
+                            
+                            <p style="margin-top: 20px; font-size: 0.9rem; color: var(--text-muted);">
+                                New user? <span class="auth-link highlight-text" onclick="padhaiApp.toggleAuthView('signup')">Create an account</span>
+                            </p>
+                        </div>
+
+                        <!-- Sign Up View -->
+                        <div id="auth-signup-view" class="hidden">
+                            <h2 style="margin-bottom: 20px; font-size: 1.5rem;">Create Account</h2>
+                            <div style="display: flex; flex-direction: column; gap: 15px;">
+                                <input type="text" id="signup-name" class="auth-input" placeholder="Full Name">
+                                <input type="text" id="signup-email" class="auth-input" placeholder="Email or Mobile Number">
+                                <input type="password" id="signup-pass" class="auth-input" placeholder="Create Password">
+                                <button class="primary-btn w-full" onclick="padhaiApp.handleAuth('signup')">Sign Up</button>
+                            </div>
+                            
+                            <div class="auth-divider"><span>OR</span></div>
+                            
+                            <div class="login-buttons" style="display: flex; gap: 10px;">
+                                <button class="social-btn google" style="flex: 1; padding: 10px;" onclick="padhaiApp.handleAuth('social')"><i class="fa-brands fa-google"></i></button>
+                                <button class="social-btn facebook" style="flex: 1; padding: 10px;" onclick="padhaiApp.handleAuth('social')"><i class="fa-brands fa-facebook"></i></button>
+                            </div>
+                            
+                            <p style="margin-top: 20px; font-size: 0.9rem; color: var(--text-muted);">
+                                Already have an account? <span class="auth-link highlight-text" onclick="padhaiApp.toggleAuthView('login')">Login</span>
+                            </p>
+                        </div>
+
+                        <!-- Forgot Password View -->
+                        <div id="auth-forgot-view" class="hidden">
+                            <h2 style="margin-bottom: 10px; font-size: 1.5rem;">Reset Password</h2>
+                            <p style="margin-bottom: 20px; font-size: 0.9rem; color: var(--text-muted);">Enter your email to receive a reset link.</p>
+                            <div style="display: flex; flex-direction: column; gap: 15px;">
+                                <input type="email" id="forgot-email" class="auth-input" placeholder="Email Address">
+                                <button class="primary-btn w-full" onclick="padhaiApp.handleAuth('forgot')">Send Reset Link</button>
+                            </div>
+                            
+                            <p style="margin-top: 25px; font-size: 0.9rem; color: var(--text-muted);">
+                                <i class="fa-solid fa-arrow-left"></i> <span class="auth-link" onclick="padhaiApp.toggleAuthView('login')">Back to Login</span>
+                            </p>
+                        </div>
+
+                        <!-- Guest Action -->
+                        <div style="margin-top: 30px; border-top: 1px solid var(--glass-border); padding-top: 20px;">
+                            <button class="secondary-btn w-full" onclick="padhaiApp.navigate('dashboard-screen')">
+                                <i class="fa-solid fa-arrow-right"></i> Continue as Guest
+                            </button>
+                            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 10px;">
+                                Note: You'll need to login later to download PDFs.
+                            </p>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- Onboarding (Skill Assessment) -->
+                <section id="onboarding-screen" class="screen active">
+                    <div class="onboarding-container glass-panel">
+                        <h2>Skill Assessment 🎯</h2>
+                        <p>Let's personalize your learning path. What exam are you targeting?</p>
+                        <select id="exam-select" class="premium-select">
+                            <option value="">Select an Exam...</option>
+                            <option value="UPSC">UPSC Civil Services</option>
+                            <option value="BPSC">BPSC / State PCS</option>
+                            <option value="SSC">SSC CGL / CHSL</option>
+                            <option value="Railways">RRB NTPC / Group D</option>
+                            <option value="Banking">Bank PO / Clerk</option>
+                            <option value="Defence">NDA / CDS / AFCAT</option>
+                            <option value="Teaching">Teaching (CTET / KVS)</option>
+                            <option value="Engineering">Engineering (IIT JEE / GATE)</option>
+                            <option value="Medical">Medical (NEET / AIIMS)</option>
+                            <option value="Law">Law (CLAT / Judiciary)</option>
+                        </select>
+                        <button class="primary-btn mt-4 w-full" onclick="padhaiApp.finishOnboarding()">Start My Journey <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                </section>
+
+                <!-- Dashboard -->
+                <section id="dashboard-screen" class="screen">
+                    <div class="dashboard-header">
+                        <h2>Hello, Learner! 👋</h2>
+                        <p>Your target: <span class="user-exam-display highlight-text">UPSC</span></p>
+                    </div>
+
+                    <!-- Smart AI Search Bar -->
+                    <div class="home-search-container mt-4" style="margin-bottom: 30px;">
+                        <div class="glass-panel" style="display: flex; align-items: center; padding: 15px 25px; border-radius: 30px; border: 2px solid rgba(99, 102, 241, 0.3);">
+                            <i class="fa-solid fa-magnifying-glass" style="font-size: 1.2rem; color: var(--text-muted);"></i>
+                            <input type="text" id="home-search-input" placeholder="Ask any question... (100% accurate answers via Top Educators)" style="flex: 1; background: transparent; border: none; outline: none; color: white; padding: 0 15px; font-size: 1.1rem;" onkeypress="if(event.key === 'Enter') app.performHomeSearch()">
+                            <button id="home-mic-btn" class="icon-btn" onclick="padhaiApp.simulateHomeVoice()" style="color: var(--primary);"><i class="fa-solid fa-microphone"></i></button>
+                        </div>
+                        <p class="text-center text-muted" style="font-size: 0.8rem; margin-top: 10px;">Powered by Google Scholar & Top Education Channels</p>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card glass-panel">
+                            <i class="fa-solid fa-bolt text-yellow"></i>
+                            <div class="stat-info">
+                                <h3>12 Days</h3>
+                                <p>Daily Streak</p>
+                            </div>
+                        </div>
+                        <div class="stat-card glass-panel">
+                            <i class="fa-solid fa-coins text-gold"></i>
+                            <div class="stat-info">
+                                <h3>450</h3>
+                                <p>Padhai Coins</p>
+                            </div>
+                        </div>
+                        <div class="stat-card glass-panel">
+                            <i class="fa-solid fa-ranking-star text-purple"></i>
+                            <div class="stat-info">
+                                <h3>Rank #42</h3>
+                                <p>Leaderboard</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-title">Today's Roadmap</div>
+                    <div class="roadmap-card glass-panel" onclick="padhaiApp.navigate('test-series-screen')">
+                        <div class="roadmap-icon bg-blue"><i class="fa-solid fa-book"></i></div>
+                        <div class="roadmap-details">
+                            <h4>Modern History: Revolt of 1857</h4>
+                            <p>Read NCERT Class 8 & Take Chapter Test</p>
+                        </div>
+                        <button class="icon-btn"><i class="fa-solid fa-play"></i></button>
+                    </div>
+
+                    <div class="section-title">Explore All Features</div>
+                    <div class="quick-actions-grid">
+                        <div class="action-card glass-panel" onclick="padhaiApp.navigate('test-series-screen')">
+                            <i class="fa-solid fa-laptop-file text-blue"></i>
+                            <span>Mock Tests</span>
+                        </div>
+                        <div class="action-card glass-panel" onclick="padhaiApp.navigate('test-series-screen')">
+                            <i class="fa-solid fa-bolt text-yellow"></i>
+                            <span>Daily Quiz</span>
+                        </div>
+                        <div class="action-card glass-panel" onclick="padhaiApp.navigate('study-material-screen')">
+                            <i class="fa-solid fa-book-open text-purple"></i>
+                            <span>Notes & Videos</span>
+                        </div>
+                        <div class="action-card glass-panel" onclick="padhaiApp.navigate('focus-tools-screen')">
+                            <i class="fa-solid fa-clock text-danger"></i>
+                            <span>Pomodoro</span>
+                        </div>
+                        <div class="action-card glass-panel" onclick="padhaiApp.navigate('smart-revision-screen')">
+                            <i class="fa-solid fa-brain text-success"></i>
+                            <span>Flashcards</span>
+                        </div>
+                        <div class="action-card glass-panel" onclick="padhaiApp.navigate('doubt-solver-screen')">
+                            <i class="fa-solid fa-camera text-accent"></i>
+                            <span>Doubt Solver</span>
+                        </div>
+                    </div>
+
+                    <!-- AI Tutor Floating Widget -->
+                    <button id="floating-tutor-btn" class="floating-btn pulse" onclick="padhaiApp.openTutor()">
+                        <i class="fa-solid fa-robot"></i>
+                    </button>
+                </section>
+
+                <!-- Test Series / Daily Quiz (Real Exam UI) -->
+                <section id="test-series-screen" class="screen full-screen-mode">
+                    <div class="exam-header">
+                        <div class="exam-title">Mock Test: History</div>
+                        <div class="exam-timer"><i class="fa-solid fa-clock"></i> <span id="timer-display">25:00</span></div>
+                    </div>
+                    <div class="exam-body">
+                        <div class="question-area">
+                            <h3 class="q-number">Question 1</h3>
+                            <p class="q-text">Who was the Governor-General of India during the Revolt of 1857?</p>
+                            <div class="options-list">
+                                <label class="option-item"><input type="radio" name="q1" value="A"> A. Lord Dalhousie</label>
+                                <label class="option-item"><input type="radio" name="q1" value="B"> B. Lord Canning</label>
+                                <label class="option-item"><input type="radio" name="q1" value="C"> C. Lord Mayo</label>
+                                <label class="option-item"><input type="radio" name="q1" value="D"> D. Lord Ripon</label>
+                            </div>
+                        </div>
+                        <div class="palette-area glass-panel">
+                            <h4>Question Palette</h4>
+                            <div class="palette-grid">
+                                <div class="palette-btn current">1</div>
+                                <div class="palette-btn">2</div>
+                                <div class="palette-btn answered">3</div>
+                                <div class="palette-btn marked">4</div>
+                                <div class="palette-btn not-visited">5</div>
+                                <div class="palette-btn not-visited">6</div>
+                            </div>
+                            <div class="palette-legend">
+                                <div><span class="dot answered"></span> Answered</div>
+                                <div><span class="dot marked"></span> Marked</div>
+                                <div><span class="dot not-visited"></span> Not Visited</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="exam-footer">
+                        <button class="secondary-btn" onclick="padhaiApp.navigate('dashboard-screen')">Exit</button>
+                        <div class="action-btns">
+                            <button class="secondary-btn">Mark for Review</button>
+                            <button class="secondary-btn">Clear</button>
+                            <button class="primary-btn" onclick="padhaiApp.submitTest()">Save & Next</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Result & Explanation Screen -->
+                <section id="result-screen" class="screen">
+                    <div class="result-container glass-panel">
+                        <h2>Test Submitted! 🎉</h2>
+                        <div class="score-circle">
+                            <span>8/10</span>
+                        </div>
+                        <p class="score-text">Excellent work! You earned 50 Padhai Coins.</p>
+                        
+                        <div class="explanation-section mt-4">
+                            <h3>Detailed Analysis (NCERT Based)</h3>
+                            <div class="explanation-card error-card">
+                                <h4>Q2. Incorrect</h4>
+                                <p><strong>Correct Answer:</strong> Article 21</p>
+                                <div class="ncert-ref">
+                                    <i class="fa-solid fa-book"></i> <strong>NCERT Reference:</strong> Class 11 Indian Constitution at Work, Chapter 2 (Rights in the Indian Constitution). Article 21 guarantees Protection of Life and Personal Liberty.
+                                </div>
+                            </div>
+                        </div>
+                        <button class="primary-btn mt-4 w-full" onclick="padhaiApp.navigate('dashboard-screen')">Back to Home</button>
+                    </div>
+                </section>
+
+                <!-- Study Material & Notes -->
+                <section id="study-material-screen" class="screen">
+                    <div class="screen-header">
+                        <h2><i class="fa-solid fa-book-open"></i> Study Material</h2>
+                    </div>
+                    <div class="tabs">
+                        <button class="tab-btn active">Handwritten</button>
+                        <button class="tab-btn">PDF</button>
+                        <button class="tab-btn">Videos</button>
+                    </div>
+                    <div class="notes-grid mt-4">
+                        <div class="note-card glass-panel">
+                            <div class="note-icon"><i class="fa-solid fa-file-pdf"></i></div>
+                            <div class="note-info">
+                                <h4>Modern History (Topper's Notes)</h4>
+                                <p>25 MB • 120 Pages</p>
+                            </div>
+                            <button class="icon-btn" onclick="padhaiApp.downloadMockPDF('Modern_History_Toppers_Notes')"><i class="fa-solid fa-download"></i></button>
+                        </div>
+                        <div class="note-card glass-panel">
+                            <div class="note-icon"><i class="fa-solid fa-file-pdf"></i></div>
+                            <div class="note-info">
+                                <h4>Indian Polity - Laxmikanth Short</h4>
+                                <p>15 MB • 80 Pages</p>
+                            </div>
+                            <button class="icon-btn" onclick="padhaiApp.downloadMockPDF('Indian_Polity_Laxmikanth_Short')"><i class="fa-solid fa-download"></i></button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Focus Tools (Pomodoro) -->
+                <section id="focus-tools-screen" class="screen">
+                    <div class="focus-container glass-panel text-center">
+                        <h2><i class="fa-solid fa-brain"></i> Focus Mode</h2>
+                        <p>Block distractions and study with Pomodoro</p>
+                        
+                        <div class="timer-circle mt-4" id="pomodoro-timer">
+                            25:00
+                        </div>
+                        <p class="timer-status mt-2" id="pomodoro-status">Study Time</p>
+                        
+                        <div class="timer-controls mt-4">
+                            <button class="primary-btn lg" id="start-pomodoro-btn" onclick="padhaiApp.togglePomodoro()"><i class="fa-solid fa-play"></i> Start Focus</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Smart Revision -->
+                <section id="smart-revision-screen" class="screen">
+                    <div class="screen-header">
+                        <h2><i class="fa-solid fa-bolt"></i> Smart Revision</h2>
+                    </div>
+                    
+                    <div class="flashcard-container glass-panel" onclick="this.classList.toggle('flipped')">
+                        <div class="flashcard-inner">
+                            <div class="flashcard-front">
+                                <h3>What is the Habeas Corpus writ?</h3>
+                                <p class="hint">Tap to flip</p>
+                            </div>
+                            <div class="flashcard-back">
+                                <h3>"To have the body of"</h3>
+                                <p>A writ requiring a person under arrest to be brought before a judge or into court.</p>
+                                <div class="feedback-btns mt-4">
+                                    <button class="btn-sm hard">Hard</button>
+                                    <button class="btn-sm good">Good</button>
+                                    <button class="btn-sm easy">Easy</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Doubt Solver -->
+                <section id="doubt-solver-screen" class="screen">
+                    <div class="screen-header">
+                        <h2><i class="fa-solid fa-magnifying-glass"></i> AI Doubt Solver</h2>
+                    </div>
+                    <div class="scanner-ui glass-panel text-center">
+                        <div class="camera-placeholder">
+                            <i class="fa-solid fa-camera"></i>
+                            <p>Point camera at your question</p>
+                        </div>
+                        <button class="primary-btn mt-4"><i class="fa-solid fa-image"></i> Upload Photo</button>
+                    </div>
+                    <div class="peer-support mt-4">
+                        <h3>Study Groups</h3>
+                        <div class="group-card glass-panel">
+                            <h4>UPSC Aspirants 2026</h4>
+                            <p>1,240 members active</p>
+                            <button class="secondary-btn btn-sm mt-2">Join Discussion</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Daily Newspapers (e-Papers) -->
+                <section id="daily-newspapers-screen" class="screen">
+                    <div class="screen-header">
+                        <h2><i class="fa-solid fa-file-invoice"></i> Daily Newspapers</h2>
+                        <p class="text-muted mt-2">Download today's top e-Papers for free.</p>
+                    </div>
+
+                    <div class="epapers-grid mt-4" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                        <div class="epaper-card glass-panel text-center" style="padding: 15px;">
+                            <i class="fa-solid fa-file-pdf" style="font-size: 2.5rem; color: #f87171;"></i>
+                            <h4 class="mt-2" style="font-size: 0.9rem;">The Hindu</h4>
+                            <button class="secondary-btn btn-sm mt-2" onclick="padhaiApp.downloadMockPDF('The_Hindu_ePaper')"><i class="fa-solid fa-download"></i> Get</button>
+                        </div>
+                        <div class="epaper-card glass-panel text-center" style="padding: 15px;">
+                            <i class="fa-solid fa-file-pdf" style="font-size: 2.5rem; color: #60a5fa;"></i>
+                            <h4 class="mt-2" style="font-size: 0.9rem;">Indian Express</h4>
+                            <button class="secondary-btn btn-sm mt-2" onclick="padhaiApp.downloadMockPDF('Indian_Express_ePaper')"><i class="fa-solid fa-download"></i> Get</button>
+                        </div>
+                        <div class="epaper-card glass-panel text-center" style="padding: 15px;">
+                            <i class="fa-solid fa-file-pdf" style="font-size: 2.5rem; color: #fbbf24;"></i>
+                            <h4 class="mt-2" style="font-size: 0.9rem;">Dainik Jagran</h4>
+                            <button class="secondary-btn btn-sm mt-2" onclick="padhaiApp.downloadMockPDF('Dainik_Jagran_ePaper')"><i class="fa-solid fa-download"></i> Get</button>
+                        </div>
+                        <div class="epaper-card glass-panel text-center" style="padding: 15px;">
+                            <i class="fa-solid fa-file-pdf" style="font-size: 2.5rem; color: #34d399;"></i>
+                            <h4 class="mt-2" style="font-size: 0.9rem;">Jansatta</h4>
+                            <button class="secondary-btn btn-sm mt-2" onclick="padhaiApp.downloadMockPDF('Jansatta_ePaper')"><i class="fa-solid fa-download"></i> Get</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Current Affairs -->
+                <section id="current-affairs-screen" class="screen">
+                    <div class="screen-header">
+                        <h2><i class="fa-solid fa-newspaper"></i> Daily Current Affairs</h2>
+                    </div>
+
+                    <div class="section-title mt-4">Top News Summaries</div>
+                    <div class="news-list mt-2">
+                        <div class="news-card glass-panel" style="margin-bottom: 15px;">
+                            <span class="badge" style="background: var(--primary); padding: 5px 10px; border-radius: 5px; font-size: 0.8rem;">National</span>
+                            <h3 class="mt-2">ISRO successfully launches new weather satellite INSAT-3DS</h3>
+                            <p class="text-muted mt-2">Important for Science & Tech portion in GS Paper 3.</p>
+                            <button class="secondary-btn btn-sm mt-4">Read Summary</button>
+                        </div>
+                        <div class="news-card glass-panel" style="margin-bottom: 15px;">
+                            <span class="badge" style="background: var(--warning); padding: 5px 10px; border-radius: 5px; font-size: 0.8rem;">Economy</span>
+                            <h3 class="mt-2">RBI announces new monetary policy review</h3>
+                            <p class="text-muted mt-2">Repo rate remains unchanged at 6.5%. Focus on inflation control.</p>
+                            <button class="secondary-btn btn-sm mt-4">Read Summary</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- All India PYQ Library -->
+                <section id="pyq-tracker-screen" class="screen">
+                    <div class="screen-header">
+                        <h2><i class="fa-solid fa-clock-rotate-left"></i> All India PYQ Library</h2>
+                        <p class="text-muted mt-2">Access Previous Year Papers for ALL Indian Exams (10+ Years)</p>
+                    </div>
+                    
+                    <!-- Exam Category Filter -->
+                    <div class="exam-filter-scroll mt-4" style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px;">
+                        <button class="primary-btn btn-sm">UPSC Civil Services</button>
+                        <button class="secondary-btn btn-sm">State PCS (BPSC/UPPSC)</button>
+                        <button class="secondary-btn btn-sm">SSC (CGL/CHSL)</button>
+                        <button class="secondary-btn btn-sm">Banking (IBPS/SBI)</button>
+                        <button class="secondary-btn btn-sm">Railways (RRB)</button>
+                        <button class="secondary-btn btn-sm">Defence (NDA/CDS)</button>
+                        <button class="secondary-btn btn-sm">Teaching (CTET/KVS)</button>
+                        <button class="secondary-btn btn-sm">Engineering & Medical</button>
+                    </div>
+
+                    <!-- PYQ Papers Grid -->
+                    <div class="pyq-grid mt-4" style="display: grid; gap: 15px;">
+                        
+                        <!-- Paper Card -->
+                        <div class="pyq-card glass-panel" style="display: flex; flex-direction: column; gap: 10px;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                <div>
+                                    <h3>UPSC CSE Prelims 2023 (GS Paper 1)</h3>
+                                    <p class="text-muted mt-2">100 Questions • 200 Marks • 2 Hours</p>
+                                </div>
+                                <span class="badge" style="background: var(--success); padding: 5px 10px; border-radius: 5px; font-size: 0.8rem;">Solved by Topper</span>
+                            </div>
+                            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                                <button class="primary-btn btn-sm" onclick="padhaiApp.navigate('test-series-screen')"><i class="fa-solid fa-play"></i> Attempt as Live Test</button>
+                                <button class="secondary-btn btn-sm" onclick="padhaiApp.downloadMockPDF('UPSC_CSE_Prelims_2023_GS1')"><i class="fa-solid fa-download"></i> Download PDF</button>
+                                <button class="secondary-btn btn-sm"><i class="fa-solid fa-video"></i> Video Solution</button>
+                            </div>
+                        </div>
+
+                        <!-- Paper Card -->
+                        <div class="pyq-card glass-panel" style="display: flex; flex-direction: column; gap: 10px;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                <div>
+                                    <h3>SSC CGL Tier 1 (2022) - Shift 1</h3>
+                                    <p class="text-muted mt-2">100 Questions • 200 Marks • 60 Mins</p>
+                                </div>
+                                <span class="badge" style="background: var(--warning); padding: 5px 10px; border-radius: 5px; font-size: 0.8rem;">Most Attempted</span>
+                            </div>
+                            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                                <button class="primary-btn btn-sm" onclick="padhaiApp.navigate('test-series-screen')"><i class="fa-solid fa-play"></i> Attempt as Live Test</button>
+                                <button class="secondary-btn btn-sm" onclick="padhaiApp.downloadMockPDF('SSC_CGL_Tier1_2022')"><i class="fa-solid fa-download"></i> Download PDF</button>
+                            </div>
+                        </div>
+
+                        <!-- Paper Card -->
+                        <div class="pyq-card glass-panel" style="display: flex; flex-direction: column; gap: 10px;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                <div>
+                                    <h3>BPSC 68th Prelims (2023)</h3>
+                                    <p class="text-muted mt-2">150 Questions • 150 Marks • 2 Hours</p>
+                                </div>
+                                <span class="badge" style="background: var(--primary); padding: 5px 10px; border-radius: 5px; font-size: 0.8rem;">Bihar Special</span>
+                            </div>
+                            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                                <button class="primary-btn btn-sm" onclick="padhaiApp.navigate('test-series-screen')"><i class="fa-solid fa-play"></i> Attempt as Live Test</button>
+                                <button class="secondary-btn btn-sm" onclick="padhaiApp.downloadMockPDF('BPSC_68th_Prelims_2023')"><i class="fa-solid fa-download"></i> Download PDF</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Paper Card -->
+                        <div class="pyq-card glass-panel" style="display: flex; flex-direction: column; gap: 10px;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                <div>
+                                    <h3>RRB NTPC CBT 1 (2021)</h3>
+                                    <p class="text-muted mt-2">100 Questions • 100 Marks • 90 Mins</p>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                                <button class="primary-btn btn-sm" onclick="padhaiApp.navigate('test-series-screen')"><i class="fa-solid fa-play"></i> Attempt as Live Test</button>
+                                <button class="secondary-btn btn-sm" onclick="padhaiApp.downloadMockPDF('RRB_NTPC_CBT1_2021')"><i class="fa-solid fa-download"></i> Download PDF</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- Exam Alerts -->
+                <section id="exam-alerts-screen" class="screen">
+                    <div class="screen-header">
+                        <h2><i class="fa-solid fa-bell"></i> Exam Alerts & Calendar</h2>
+                    </div>
+                    <div class="alerts-list mt-4">
+                        <div class="alert-card glass-panel" style="border-left: 4px solid var(--danger); margin-bottom: 15px;">
+                            <h3 class="text-danger"><i class="fa-solid fa-triangle-exclamation"></i> UPSC CSE 2024 Prelims Postponed</h3>
+                            <p class="mt-2">New Date: June 16, 2024. Plan your revision accordingly.</p>
+                        </div>
+                        <div class="alert-card glass-panel" style="border-left: 4px solid var(--success); margin-bottom: 15px;">
+                            <h3 class="text-success"><i class="fa-solid fa-circle-check"></i> SSC CGL Notification Out</h3>
+                            <p class="mt-2">Last date to apply is 4th May. Click here to check eligibility.</p>
+                        </div>
+                    </div>
+                    </div>
+                </section>
+
+                <!-- Help & Support -->
+                <section id="help-screen" class="screen">
+                    <div class="screen-header">
+                        <h2><i class="fa-solid fa-circle-question"></i> Help & Support</h2>
+                        <p class="text-muted mt-2">Find answers or contact our team.</p>
+                    </div>
+                    
+                    <div class="faq-section mt-4">
+                        <h3 style="margin-bottom: 15px;">Frequently Asked Questions</h3>
+                        
+                        <div class="glass-panel" style="margin-bottom: 10px; padding: 15px;">
+                            <h4 style="color: var(--primary);">How do I use Voice Command?</h4>
+                            <p class="text-muted mt-2">Just click the floating Robot icon at the bottom right to open the AI Tutor. Tap the Mic icon and start speaking.</p>
+                        </div>
+                        
+                        <div class="glass-panel" style="margin-bottom: 10px; padding: 15px;">
+                            <h4 style="color: var(--primary);">Where can I find my test results?</h4>
+                            <p class="text-muted mt-2">Test results and detailed NCERT explanations appear immediately after you submit a Mock Test or Daily Quiz.</p>
+                        </div>
+                        
+                        <div class="glass-panel" style="margin-bottom: 20px; padding: 15px;">
+                            <h4 style="color: var(--primary);">How does the Pomodoro timer work?</h4>
+                            <p class="text-muted mt-2">Go to Focus Tools. It gives you 25 minutes of deep work time followed by a 5-minute break to maximize productivity.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-section glass-panel text-center mt-4">
+                        <h3>Still need help?</h3>
+                        <p class="mt-2 text-muted">Our expert support team is available 24/7.</p>
+                        <a href="https://wa.me/916207715021?text=Hi%20PadhaiSathi%20Team!%20I%20need%20some%20help." target="_blank" style="text-decoration: none;">
+                            <button class="primary-btn mt-4" style="background: linear-gradient(135deg, #25D366, #128C7E);"><i class="fa-brands fa-whatsapp"></i> Chat on WhatsApp</button>
+                        </a>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- AI Chat Tutor Modal -->
+    <div id="tutor-modal" class="modal hidden">
+        <div class="modal-content glass-panel chat-modal">
+            <div class="chat-header">
+                <div>
+                    <h3><i class="fa-solid fa-robot"></i> PadhaiSathi AI</h3>
+                    <p class="status">Online • NCERT Expert</p>
+                </div>
+                <button class="icon-btn" onclick="padhaiApp.closeTutor()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="chat-messages" id="chat-messages">
+                <div class="message ai">
+                    <p>Namaste! Main tumhara PadhaiSathi hoon. Aaj hum kya padhein? (Voice command dene ke liye mic button dabao)</p>
+                </div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="chat-input" placeholder="Type your question..." onkeypress="app.handleChatKeyPress(event)">
+                <button class="icon-btn mic-btn" id="mic-btn" onclick="padhaiApp.simulateVoice()"><i class="fa-solid fa-microphone"></i></button>
+                <button class="icon-btn send-btn" onclick="padhaiApp.sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="app.js?v=6"></script>
+</body>
+</html>
+
+
+
