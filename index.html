@@ -46,7 +46,7 @@
                 <div class="header-title">PadhaiSathi <span class="user-exam-display badge" style="font-size: 0.7rem; background: var(--primary); padding: 2px 8px; border-radius: 10px; margin-left: 5px; vertical-align: middle;"></span></div>
                 <div class="header-actions">
                     <div class="streak-badge"><i class="fa-solid fa-fire"></i> <span id="streak-count">12</span></div>
-                    <button class="icon-btn profile-btn" onclick="app.logout()"><i class="fa-solid fa-right-from-bracket"></i></button>
+                    <button class="icon-btn profile-btn" onclick="padhaiApp.logout()"><i class="fa-solid fa-right-from-bracket"></i></button>
                 </div>
             </header>
 
@@ -69,20 +69,20 @@
                                 <input type="text" id="login-email" class="auth-input" placeholder="Email or Phone Number">
                                 <input type="password" id="login-pass" class="auth-input" placeholder="Password">
                                 <div style="display: flex; justify-content: flex-end;">
-                                    <span class="auth-link" onclick="app.toggleAuthView('forgot')">Forgot Password?</span>
+                                    <span class="auth-link" onclick="padhaiApp.toggleAuthView('forgot')">Forgot Password?</span>
                                 </div>
-                                <button class="primary-btn w-full" onclick="app.handleAuth('login')">Login</button>
+                                <button class="primary-btn w-full" onclick="padhaiApp.handleAuth('login')">Login</button>
                             </div>
                             
                             <div class="auth-divider"><span>OR</span></div>
                             
                             <div class="login-buttons">
-                                <button class="social-btn google" onclick="app.handleAuth('social')"><i class="fa-brands fa-google"></i> Google</button>
-                                <button class="social-btn facebook" onclick="app.handleAuth('social')"><i class="fa-brands fa-facebook"></i> Facebook</button>
+                                <button class="social-btn google" onclick="padhaiApp.handleAuth('social')"><i class="fa-brands fa-google"></i> Google</button>
+                                <button class="social-btn facebook" onclick="padhaiApp.handleAuth('social')"><i class="fa-brands fa-facebook"></i> Facebook</button>
                             </div>
                             
                             <p style="margin-top: 20px; font-size: 0.9rem; color: var(--text-muted);">
-                                New user? <span class="auth-link highlight-text" onclick="app.toggleAuthView('signup')">Create an account</span>
+                                New user? <span class="auth-link highlight-text" onclick="padhaiApp.toggleAuthView('signup')">Create an account</span>
                             </p>
                         </div>
 
@@ -93,18 +93,18 @@
                                 <input type="text" id="signup-name" class="auth-input" placeholder="Full Name">
                                 <input type="text" id="signup-email" class="auth-input" placeholder="Email or Mobile Number">
                                 <input type="password" id="signup-pass" class="auth-input" placeholder="Create Password">
-                                <button class="primary-btn w-full" onclick="app.handleAuth('signup')">Sign Up</button>
+                                <button class="primary-btn w-full" onclick="padhaiApp.handleAuth('signup')">Sign Up</button>
                             </div>
                             
                             <div class="auth-divider"><span>OR</span></div>
                             
                             <div class="login-buttons" style="display: flex; gap: 10px;">
-                                <button class="social-btn google" style="flex: 1; padding: 10px;" onclick="app.handleAuth('social')"><i class="fa-brands fa-google"></i></button>
-                                <button class="social-btn facebook" style="flex: 1; padding: 10px;" onclick="app.handleAuth('social')"><i class="fa-brands fa-facebook"></i></button>
+                                <button class="social-btn google" style="flex: 1; padding: 10px;" onclick="padhaiApp.handleAuth('social')"><i class="fa-brands fa-google"></i></button>
+                                <button class="social-btn facebook" style="flex: 1; padding: 10px;" onclick="padhaiApp.handleAuth('social')"><i class="fa-brands fa-facebook"></i></button>
                             </div>
                             
                             <p style="margin-top: 20px; font-size: 0.9rem; color: var(--text-muted);">
-                                Already have an account? <span class="auth-link highlight-text" onclick="app.toggleAuthView('login')">Login</span>
+                                Already have an account? <span class="auth-link highlight-text" onclick="padhaiApp.toggleAuthView('login')">Login</span>
                             </p>
                         </div>
 
@@ -114,17 +114,17 @@
                             <p style="margin-bottom: 20px; font-size: 0.9rem; color: var(--text-muted);">Enter your email to receive a reset link.</p>
                             <div style="display: flex; flex-direction: column; gap: 15px;">
                                 <input type="email" id="forgot-email" class="auth-input" placeholder="Email Address">
-                                <button class="primary-btn w-full" onclick="app.handleAuth('forgot')">Send Reset Link</button>
+                                <button class="primary-btn w-full" onclick="padhaiApp.handleAuth('forgot')">Send Reset Link</button>
                             </div>
                             
                             <p style="margin-top: 25px; font-size: 0.9rem; color: var(--text-muted);">
-                                <i class="fa-solid fa-arrow-left"></i> <span class="auth-link" onclick="app.toggleAuthView('login')">Back to Login</span>
+                                <i class="fa-solid fa-arrow-left"></i> <span class="auth-link" onclick="padhaiApp.toggleAuthView('login')">Back to Login</span>
                             </p>
                         </div>
 
                         <!-- Guest Action -->
                         <div style="margin-top: 30px; border-top: 1px solid var(--glass-border); padding-top: 20px;">
-                            <button class="secondary-btn w-full" onclick="app.navigate('dashboard-screen')">
+                            <button class="secondary-btn w-full" onclick="padhaiApp.navigate('dashboard-screen')">
                                 <i class="fa-solid fa-arrow-right"></i> Continue as Guest
                             </button>
                             <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 10px;">
@@ -153,7 +153,7 @@
                             <option value="Medical">Medical (NEET / AIIMS)</option>
                             <option value="Law">Law (CLAT / Judiciary)</option>
                         </select>
-                        <button class="primary-btn mt-4 w-full" onclick="app.finishOnboarding()">Start My Journey <i class="fa-solid fa-arrow-right"></i></button>
+                        <button class="primary-btn mt-4 w-full" onclick="padhaiApp.finishOnboarding()">Start My Journey <i class="fa-solid fa-arrow-right"></i></button>
                     </div>
                 </section>
 
@@ -169,7 +169,7 @@
                         <div class="glass-panel" style="display: flex; align-items: center; padding: 15px 25px; border-radius: 30px; border: 2px solid rgba(99, 102, 241, 0.3);">
                             <i class="fa-solid fa-magnifying-glass" style="font-size: 1.2rem; color: var(--text-muted);"></i>
                             <input type="text" id="home-search-input" placeholder="Ask any question... (100% accurate answers via Top Educators)" style="flex: 1; background: transparent; border: none; outline: none; color: white; padding: 0 15px; font-size: 1.1rem;" onkeypress="if(event.key === 'Enter') app.performHomeSearch()">
-                            <button id="home-mic-btn" class="icon-btn" onclick="app.simulateHomeVoice()" style="color: var(--primary);"><i class="fa-solid fa-microphone"></i></button>
+                            <button id="home-mic-btn" class="icon-btn" onclick="padhaiApp.simulateHomeVoice()" style="color: var(--primary);"><i class="fa-solid fa-microphone"></i></button>
                         </div>
                         <p class="text-center text-muted" style="font-size: 0.8rem; margin-top: 10px;">Powered by Google Scholar & Top Education Channels</p>
                     </div>
@@ -199,7 +199,7 @@
                     </div>
 
                     <div class="section-title">Today's Roadmap</div>
-                    <div class="roadmap-card glass-panel" onclick="app.navigate('test-series-screen')">
+                    <div class="roadmap-card glass-panel" onclick="padhaiApp.navigate('test-series-screen')">
                         <div class="roadmap-icon bg-blue"><i class="fa-solid fa-book"></i></div>
                         <div class="roadmap-details">
                             <h4>Modern History: Revolt of 1857</h4>
@@ -210,34 +210,34 @@
 
                     <div class="section-title">Explore All Features</div>
                     <div class="quick-actions-grid">
-                        <div class="action-card glass-panel" onclick="app.navigate('test-series-screen')">
+                        <div class="action-card glass-panel" onclick="padhaiApp.navigate('test-series-screen')">
                             <i class="fa-solid fa-laptop-file text-blue"></i>
                             <span>Mock Tests</span>
                         </div>
-                        <div class="action-card glass-panel" onclick="app.navigate('test-series-screen')">
+                        <div class="action-card glass-panel" onclick="padhaiApp.navigate('test-series-screen')">
                             <i class="fa-solid fa-bolt text-yellow"></i>
                             <span>Daily Quiz</span>
                         </div>
-                        <div class="action-card glass-panel" onclick="app.navigate('study-material-screen')">
+                        <div class="action-card glass-panel" onclick="padhaiApp.navigate('study-material-screen')">
                             <i class="fa-solid fa-book-open text-purple"></i>
                             <span>Notes & Videos</span>
                         </div>
-                        <div class="action-card glass-panel" onclick="app.navigate('focus-tools-screen')">
+                        <div class="action-card glass-panel" onclick="padhaiApp.navigate('focus-tools-screen')">
                             <i class="fa-solid fa-clock text-danger"></i>
                             <span>Pomodoro</span>
                         </div>
-                        <div class="action-card glass-panel" onclick="app.navigate('smart-revision-screen')">
+                        <div class="action-card glass-panel" onclick="padhaiApp.navigate('smart-revision-screen')">
                             <i class="fa-solid fa-brain text-success"></i>
                             <span>Flashcards</span>
                         </div>
-                        <div class="action-card glass-panel" onclick="app.navigate('doubt-solver-screen')">
+                        <div class="action-card glass-panel" onclick="padhaiApp.navigate('doubt-solver-screen')">
                             <i class="fa-solid fa-camera text-accent"></i>
                             <span>Doubt Solver</span>
                         </div>
                     </div>
 
                     <!-- AI Tutor Floating Widget -->
-                    <button id="floating-tutor-btn" class="floating-btn pulse" onclick="app.openTutor()">
+                    <button id="floating-tutor-btn" class="floating-btn pulse" onclick="padhaiApp.openTutor()">
                         <i class="fa-solid fa-robot"></i>
                     </button>
                 </section>
@@ -277,11 +277,11 @@
                         </div>
                     </div>
                     <div class="exam-footer">
-                        <button class="secondary-btn" onclick="app.navigate('dashboard-screen')">Exit</button>
+                        <button class="secondary-btn" onclick="padhaiApp.navigate('dashboard-screen')">Exit</button>
                         <div class="action-btns">
                             <button class="secondary-btn">Mark for Review</button>
                             <button class="secondary-btn">Clear</button>
-                            <button class="primary-btn" onclick="app.submitTest()">Save & Next</button>
+                            <button class="primary-btn" onclick="padhaiApp.submitTest()">Save & Next</button>
                         </div>
                     </div>
                 </section>
@@ -305,7 +305,7 @@
                                 </div>
                             </div>
                         </div>
-                        <button class="primary-btn mt-4 w-full" onclick="app.navigate('dashboard-screen')">Back to Home</button>
+                        <button class="primary-btn mt-4 w-full" onclick="padhaiApp.navigate('dashboard-screen')">Back to Home</button>
                     </div>
                 </section>
 
@@ -326,7 +326,7 @@
                                 <h4>Modern History (Topper's Notes)</h4>
                                 <p>25 MB • 120 Pages</p>
                             </div>
-                            <button class="icon-btn" onclick="app.downloadMockPDF('Modern_History_Toppers_Notes')"><i class="fa-solid fa-download"></i></button>
+                            <button class="icon-btn" onclick="padhaiApp.downloadMockPDF('Modern_History_Toppers_Notes')"><i class="fa-solid fa-download"></i></button>
                         </div>
                         <div class="note-card glass-panel">
                             <div class="note-icon"><i class="fa-solid fa-file-pdf"></i></div>
@@ -334,7 +334,7 @@
                                 <h4>Indian Polity - Laxmikanth Short</h4>
                                 <p>15 MB • 80 Pages</p>
                             </div>
-                            <button class="icon-btn" onclick="app.downloadMockPDF('Indian_Polity_Laxmikanth_Short')"><i class="fa-solid fa-download"></i></button>
+                            <button class="icon-btn" onclick="padhaiApp.downloadMockPDF('Indian_Polity_Laxmikanth_Short')"><i class="fa-solid fa-download"></i></button>
                         </div>
                     </div>
                 </section>
@@ -351,7 +351,7 @@
                         <p class="timer-status mt-2" id="pomodoro-status">Study Time</p>
                         
                         <div class="timer-controls mt-4">
-                            <button class="primary-btn lg" id="start-pomodoro-btn" onclick="app.togglePomodoro()"><i class="fa-solid fa-play"></i> Start Focus</button>
+                            <button class="primary-btn lg" id="start-pomodoro-btn" onclick="padhaiApp.togglePomodoro()"><i class="fa-solid fa-play"></i> Start Focus</button>
                         </div>
                     </div>
                 </section>
@@ -414,22 +414,22 @@
                         <div class="epaper-card glass-panel text-center" style="padding: 15px;">
                             <i class="fa-solid fa-file-pdf" style="font-size: 2.5rem; color: #f87171;"></i>
                             <h4 class="mt-2" style="font-size: 0.9rem;">The Hindu</h4>
-                            <button class="secondary-btn btn-sm mt-2" onclick="app.downloadMockPDF('The_Hindu_ePaper')"><i class="fa-solid fa-download"></i> Get</button>
+                            <button class="secondary-btn btn-sm mt-2" onclick="padhaiApp.downloadMockPDF('The_Hindu_ePaper')"><i class="fa-solid fa-download"></i> Get</button>
                         </div>
                         <div class="epaper-card glass-panel text-center" style="padding: 15px;">
                             <i class="fa-solid fa-file-pdf" style="font-size: 2.5rem; color: #60a5fa;"></i>
                             <h4 class="mt-2" style="font-size: 0.9rem;">Indian Express</h4>
-                            <button class="secondary-btn btn-sm mt-2" onclick="app.downloadMockPDF('Indian_Express_ePaper')"><i class="fa-solid fa-download"></i> Get</button>
+                            <button class="secondary-btn btn-sm mt-2" onclick="padhaiApp.downloadMockPDF('Indian_Express_ePaper')"><i class="fa-solid fa-download"></i> Get</button>
                         </div>
                         <div class="epaper-card glass-panel text-center" style="padding: 15px;">
                             <i class="fa-solid fa-file-pdf" style="font-size: 2.5rem; color: #fbbf24;"></i>
                             <h4 class="mt-2" style="font-size: 0.9rem;">Dainik Jagran</h4>
-                            <button class="secondary-btn btn-sm mt-2" onclick="app.downloadMockPDF('Dainik_Jagran_ePaper')"><i class="fa-solid fa-download"></i> Get</button>
+                            <button class="secondary-btn btn-sm mt-2" onclick="padhaiApp.downloadMockPDF('Dainik_Jagran_ePaper')"><i class="fa-solid fa-download"></i> Get</button>
                         </div>
                         <div class="epaper-card glass-panel text-center" style="padding: 15px;">
                             <i class="fa-solid fa-file-pdf" style="font-size: 2.5rem; color: #34d399;"></i>
                             <h4 class="mt-2" style="font-size: 0.9rem;">Jansatta</h4>
-                            <button class="secondary-btn btn-sm mt-2" onclick="app.downloadMockPDF('Jansatta_ePaper')"><i class="fa-solid fa-download"></i> Get</button>
+                            <button class="secondary-btn btn-sm mt-2" onclick="padhaiApp.downloadMockPDF('Jansatta_ePaper')"><i class="fa-solid fa-download"></i> Get</button>
                         </div>
                     </div>
                 </section>
@@ -489,8 +489,8 @@
                                 <span class="badge" style="background: var(--success); padding: 5px 10px; border-radius: 5px; font-size: 0.8rem;">Solved by Topper</span>
                             </div>
                             <div style="display: flex; gap: 10px; margin-top: 10px;">
-                                <button class="primary-btn btn-sm" onclick="app.navigate('test-series-screen')"><i class="fa-solid fa-play"></i> Attempt as Live Test</button>
-                                <button class="secondary-btn btn-sm" onclick="app.downloadMockPDF('UPSC_CSE_Prelims_2023_GS1')"><i class="fa-solid fa-download"></i> Download PDF</button>
+                                <button class="primary-btn btn-sm" onclick="padhaiApp.navigate('test-series-screen')"><i class="fa-solid fa-play"></i> Attempt as Live Test</button>
+                                <button class="secondary-btn btn-sm" onclick="padhaiApp.downloadMockPDF('UPSC_CSE_Prelims_2023_GS1')"><i class="fa-solid fa-download"></i> Download PDF</button>
                                 <button class="secondary-btn btn-sm"><i class="fa-solid fa-video"></i> Video Solution</button>
                             </div>
                         </div>
@@ -505,8 +505,8 @@
                                 <span class="badge" style="background: var(--warning); padding: 5px 10px; border-radius: 5px; font-size: 0.8rem;">Most Attempted</span>
                             </div>
                             <div style="display: flex; gap: 10px; margin-top: 10px;">
-                                <button class="primary-btn btn-sm" onclick="app.navigate('test-series-screen')"><i class="fa-solid fa-play"></i> Attempt as Live Test</button>
-                                <button class="secondary-btn btn-sm" onclick="app.downloadMockPDF('SSC_CGL_Tier1_2022')"><i class="fa-solid fa-download"></i> Download PDF</button>
+                                <button class="primary-btn btn-sm" onclick="padhaiApp.navigate('test-series-screen')"><i class="fa-solid fa-play"></i> Attempt as Live Test</button>
+                                <button class="secondary-btn btn-sm" onclick="padhaiApp.downloadMockPDF('SSC_CGL_Tier1_2022')"><i class="fa-solid fa-download"></i> Download PDF</button>
                             </div>
                         </div>
 
@@ -520,8 +520,8 @@
                                 <span class="badge" style="background: var(--primary); padding: 5px 10px; border-radius: 5px; font-size: 0.8rem;">Bihar Special</span>
                             </div>
                             <div style="display: flex; gap: 10px; margin-top: 10px;">
-                                <button class="primary-btn btn-sm" onclick="app.navigate('test-series-screen')"><i class="fa-solid fa-play"></i> Attempt as Live Test</button>
-                                <button class="secondary-btn btn-sm" onclick="app.downloadMockPDF('BPSC_68th_Prelims_2023')"><i class="fa-solid fa-download"></i> Download PDF</button>
+                                <button class="primary-btn btn-sm" onclick="padhaiApp.navigate('test-series-screen')"><i class="fa-solid fa-play"></i> Attempt as Live Test</button>
+                                <button class="secondary-btn btn-sm" onclick="padhaiApp.downloadMockPDF('BPSC_68th_Prelims_2023')"><i class="fa-solid fa-download"></i> Download PDF</button>
                             </div>
                         </div>
                         
@@ -534,8 +534,8 @@
                                 </div>
                             </div>
                             <div style="display: flex; gap: 10px; margin-top: 10px;">
-                                <button class="primary-btn btn-sm" onclick="app.navigate('test-series-screen')"><i class="fa-solid fa-play"></i> Attempt as Live Test</button>
-                                <button class="secondary-btn btn-sm" onclick="app.downloadMockPDF('RRB_NTPC_CBT1_2021')"><i class="fa-solid fa-download"></i> Download PDF</button>
+                                <button class="primary-btn btn-sm" onclick="padhaiApp.navigate('test-series-screen')"><i class="fa-solid fa-play"></i> Attempt as Live Test</button>
+                                <button class="secondary-btn btn-sm" onclick="padhaiApp.downloadMockPDF('RRB_NTPC_CBT1_2021')"><i class="fa-solid fa-download"></i> Download PDF</button>
                             </div>
                         </div>
 
@@ -607,7 +607,7 @@
                     <h3><i class="fa-solid fa-robot"></i> PadhaiSathi AI</h3>
                     <p class="status">Online • NCERT Expert</p>
                 </div>
-                <button class="icon-btn" onclick="app.closeTutor()"><i class="fa-solid fa-xmark"></i></button>
+                <button class="icon-btn" onclick="padhaiApp.closeTutor()"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="chat-messages" id="chat-messages">
                 <div class="message ai">
@@ -616,14 +616,15 @@
             </div>
             <div class="chat-input-area">
                 <input type="text" id="chat-input" placeholder="Type your question..." onkeypress="app.handleChatKeyPress(event)">
-                <button class="icon-btn mic-btn" id="mic-btn" onclick="app.simulateVoice()"><i class="fa-solid fa-microphone"></i></button>
-                <button class="icon-btn send-btn" onclick="app.sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+                <button class="icon-btn mic-btn" id="mic-btn" onclick="padhaiApp.simulateVoice()"><i class="fa-solid fa-microphone"></i></button>
+                <button class="icon-btn send-btn" onclick="padhaiApp.sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
             </div>
         </div>
     </div>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="app.js?v=3"></script>
+    <script src="app.js?v=4"></script>
 </body>
 </html>
+
