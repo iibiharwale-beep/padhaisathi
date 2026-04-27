@@ -391,6 +391,74 @@ const VIPMentorship = () => (
   </div>
 );
 
+const TestSeriesPYQ = () => (
+  <div className="p-8 space-y-8 animate-in fade-in">
+    <div className="flex justify-between items-end mb-6 border-b border-slate-200 pb-4">
+      <div>
+        <h2 className="text-3xl font-bold text-slate-800 flex items-center gap-3">
+          <Target className="text-rose-500"/> Mega Test Series & PYQs
+        </h2>
+        <p className="text-slate-500 mt-2">Real exam simulation with 20 Years of Previous Year Questions.</p>
+      </div>
+      <div className="bg-rose-50 text-rose-600 px-4 py-2 rounded-xl font-bold text-sm border border-rose-100 flex items-center gap-2">
+        <Flame size={18} /> Live Ranking
+      </div>
+    </div>
+
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {/* 20 Years PYQ Section */}
+      <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 relative overflow-hidden group">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-3xl group-hover:bg-indigo-500/20 transition-all"></div>
+        <div className="flex items-center gap-3 mb-4">
+          <div className="bg-indigo-100 p-3 rounded-xl"><History className="text-indigo-600"/></div>
+          <h3 className="text-xl font-bold text-slate-800">20 Years PYQs (2004-2024)</h3>
+        </div>
+        <p className="text-sm text-slate-500 mb-6">Solve exact questions asked in the last two decades. Topic-wise filtered with detailed solutions.</p>
+        
+        <div className="space-y-3">
+          {[
+            { year: '2023-2024', label: 'Recent Trend', color: 'bg-emerald-50 text-emerald-700' },
+            { year: '2015-2022', label: 'Pattern Change', color: 'bg-blue-50 text-blue-700' },
+            { year: '2004-2014', label: 'Classic Era', color: 'bg-slate-100 text-slate-700' }
+          ].map((pyq, i) => (
+            <div key={i} className="flex justify-between items-center p-3 rounded-xl border border-slate-100 hover:border-indigo-300 transition cursor-pointer">
+              <span className="font-bold text-slate-700">{pyq.year} Papers</span>
+              <span className={`text-xs font-bold px-3 py-1 rounded-full ${pyq.color}`}>{pyq.label}</span>
+            </div>
+          ))}
+        </div>
+        <button className="w-full mt-4 bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700 transition">Start PYQ Mode</button>
+      </div>
+
+      {/* Full Length Mocks */}
+      <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 relative overflow-hidden group">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-rose-500/10 rounded-full blur-3xl group-hover:bg-rose-500/20 transition-all"></div>
+        <div className="flex items-center gap-3 mb-4">
+          <div className="bg-rose-100 p-3 rounded-xl"><FileText className="text-rose-600"/></div>
+          <h3 className="text-xl font-bold text-slate-800">Full-Length Mega Mocks</h3>
+        </div>
+        <p className="text-sm text-slate-500 mb-6">Exact exam interface (TCS/NTA pattern). Negative marking, timer, and All India Rank.</p>
+        
+        <div className="space-y-3">
+          {[
+            { name: 'Mega Mock Test 1 (New Pattern)', status: 'Live Now', type: 'live' },
+            { name: 'Sectional Mock: Polity + History', status: 'Attempted', type: 'done' },
+            { name: 'CSAT / Aptitude Test 5', status: 'Upcoming (Sunday)', type: 'wait' }
+          ].map((mock, i) => (
+            <div key={i} className="flex justify-between items-center p-3 rounded-xl border border-slate-100 hover:border-rose-300 transition cursor-pointer">
+              <span className="font-medium text-slate-700 text-sm">{mock.name}</span>
+              <span className={`text-xs font-bold px-2 py-1 rounded-md ${mock.type === 'live' ? 'bg-red-100 text-red-600 animate-pulse' : mock.type === 'done' ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'}`}>
+                {mock.status}
+              </span>
+            </div>
+          ))}
+        </div>
+        <button className="w-full mt-4 bg-slate-900 text-white font-bold py-3 rounded-xl hover:bg-slate-800 transition">View All Tests</button>
+      </div>
+    </div>
+  </div>
+);
+
 const OnboardingModal = ({ onSubmit }: { onSubmit: (name: string, exam: string) => void }) => {
   const [name, setName] = useState('');
   const [exam, setExam] = useState('UPSC Civil Services');
@@ -422,12 +490,33 @@ const OnboardingModal = ({ onSubmit }: { onSubmit: (name: string, exam: string) 
             onChange={(e) => setExam(e.target.value)}
             className="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-xl px-4 py-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium appearance-none"
           >
-            <option>UPSC Civil Services</option>
-            <option>SSC CGL</option>
-            <option>Banking (IBPS/SBI)</option>
-            <option>BPSC / State PCS</option>
-            <option>Railway (RRB)</option>
-            <option>Defence (NDA/CDS)</option>
+            <optgroup label="Central Level Exams">
+              <option>UPSC Civil Services (CSE)</option>
+              <option>SSC CGL / CHSL / MTS</option>
+              <option>Banking (IBPS PO/Clerk, SBI)</option>
+              <option>Railway (RRB NTPC, Group D)</option>
+              <option>Defence (NDA, CDS, AFCAT)</option>
+            </optgroup>
+            <optgroup label="State PCS (Public Service)">
+              <option>BPSC (Bihar PCS)</option>
+              <option>UPPSC (Uttar Pradesh PCS)</option>
+              <option>MPPSC (Madhya Pradesh PCS)</option>
+              <option>RPSC (Rajasthan PCS)</option>
+              <option>JPSC (Jharkhand PCS)</option>
+              <option>HPSC (Haryana PCS)</option>
+            </optgroup>
+            <optgroup label="State Level & Police">
+              <option>Bihar SSC / Bihar Police</option>
+              <option>UP Police / UPSSSC</option>
+              <option>MP Patwari / Vyapam</option>
+              <option>Delhi Police</option>
+            </optgroup>
+            <optgroup label="Entrance Exams">
+              <option>IIT JEE (Mains & Adv)</option>
+              <option>NEET (UG)</option>
+              <option>CUET</option>
+              <option>CLAT</option>
+            </optgroup>
           </select>
           
           <button 
@@ -510,6 +599,7 @@ export default function App() {
       case 'dashboard': return <Dashboard onStartAssessment={() => setShowOnboarding(true)} userName={userName} userExam={userExam} />;
       case 'library': return <LibraryView setTab={setActiveTab} />;
       case 'content': return <StudyContentViewer />;
+      case 'tests': return <TestSeriesPYQ />;
       case 'revision': return <SmartRevision />;
       case 'videos': return <VideoContent />;
       case 'audio': return <PremiumAudioBooks />;
@@ -564,6 +654,7 @@ export default function App() {
           {[
             { id: 'dashboard', icon: LayoutDashboard, label: 'Roadmap & Dashboard' },
             { id: 'library', icon: Library, label: 'Study Library' },
+            { id: 'tests', icon: Target, label: 'Test Series & PYQs', isPremium: true },
             { id: 'audio', icon: Headphones, label: 'Audio NCERTs', isPremium: true },
             { id: 'revision', icon: Brain, label: 'Smart Revision' },
             { id: 'videos', icon: Video, label: 'Summary Videos' },
