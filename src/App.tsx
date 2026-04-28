@@ -985,10 +985,46 @@ const LiveTestEngine = ({ testId, onExit }: { testId?: string | null, onExit: ()
                 <p className="text-xs font-bold text-slate-800 mt-1">Attempted</p>
               </div>
             </div>
-            <div className="space-y-2 text-left max-h-60 overflow-y-auto">
+            <div className="space-y-6 text-left max-h-[60vh] overflow-y-auto pr-4 custom-scrollbar">
+              <div className="flex items-center gap-2 mb-4 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                <div className="w-3 h-3 bg-emerald-500 rounded-full"></div>
+                <span className="text-xs font-bold text-slate-600 uppercase tracking-wider">Detailed Answer Key & Solutions</span>
+              </div>
               {questions.map((q, i) => (
-                <div key={i} className={`p-3 rounded-xl border text-sm ${answers[i] === q.correct ? 'bg-emerald-50 border-emerald-200' : answers[i] !== undefined ? 'bg-red-50 border-red-200' : 'bg-slate-50 border-slate-200'}`}>
-                  <p className="font-bold text-slate-700 text-xs">Q{i+1}: {answers[i] !== undefined ? (answers[i] === q.correct ? '✅ Correct' : `❌ Wrong — Correct: ${q.opts[q.correct]}`) : '⏭ Skipped'}</p>
+                <div key={i} className={`p-6 rounded-[2rem] border-2 transition-all ${answers[i] === q.correct ? 'bg-emerald-50/30 border-emerald-100' : answers[i] !== undefined ? 'bg-red-50/30 border-red-100' : 'bg-slate-50 border-slate-100'}`}>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="bg-slate-900 text-white px-3 py-1 rounded-lg text-xs font-black">QUESTION {i+1}</span>
+                    {answers[i] === q.correct ? (
+                      <span className="text-emerald-600 font-black text-xs flex items-center gap-1">✅ CORRECT (+2)</span>
+                    ) : answers[i] !== undefined ? (
+                      <span className="text-red-600 font-black text-xs flex items-center gap-1">❌ WRONG (-0.66)</span>
+                    ) : (
+                      <span className="text-slate-400 font-black text-xs flex items-center gap-1">⏭ SKIPPED</span>
+                    )}
+                  </div>
+                  <p className="font-bold text-slate-800 mb-4 text-base leading-relaxed">{q.q}</p>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
+                    <div className={`p-3 rounded-xl border ${answers[i] === q.correct ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-white border-slate-100 text-slate-500'}`}>
+                      <p className="text-[10px] font-black uppercase opacity-60 mb-1">Your Answer</p>
+                      <p className="font-bold">{answers[i] !== undefined ? q.opts[answers[i]] : 'Not Attempted'}</p>
+                    </div>
+                    <div className="p-3 rounded-xl border bg-indigo-50 border-indigo-100 text-indigo-800">
+                      <p className="text-[10px] font-black uppercase opacity-60 mb-1">Correct Answer</p>
+                      <p className="font-bold">{q.opts[q.correct]}</p>
+                    </div>
+                  </div>
+
+                  {/* Solution/Explanation Box */}
+                  <div className="bg-white p-5 rounded-2xl border border-indigo-50 shadow-sm">
+                    <div className="flex items-center gap-2 mb-2 text-indigo-600">
+                      <Sparkles size={16} />
+                      <span className="text-xs font-black uppercase tracking-widest">Step-by-Step Solution</span>
+                    </div>
+                    <p className="text-sm text-slate-600 leading-relaxed font-medium">
+                      {q.explanation || 'No detailed explanation available for this question yet. Our educators are working on it!'}
+                    </p>
+                  </div>
                 </div>
               ))}
             </div>
