@@ -913,7 +913,7 @@ const LiveTestEngine = ({ testId, onExit }: { testId?: string | null, onExit: ()
 
   if (!hasStarted) {
     return (
-      <div className="absolute inset-0 bg-slate-100 z-50 flex items-center justify-center p-8 animate-in fade-in">
+      <div className="fixed inset-0 bg-slate-100 z-[100] flex items-center justify-center p-8 animate-in fade-in">
         <div className="bg-white max-w-2xl w-full rounded-[2.5rem] shadow-2xl overflow-hidden border border-slate-200">
           <div className="bg-slate-900 p-8 text-white">
             <h2 className="text-3xl font-black mb-2">Exam Instructions</h2>
@@ -950,7 +950,7 @@ const LiveTestEngine = ({ testId, onExit }: { testId?: string | null, onExit: ()
     const correct = questions.filter((q, i) => answers[i] === q.correct).length;
     const attempted = Object.keys(answers).length;
     return (
-      <div className="absolute inset-0 bg-slate-50 z-50 flex items-center justify-center p-8 animate-in fade-in">
+      <div className="fixed inset-0 bg-slate-50 z-[100] flex items-center justify-center p-8 animate-in fade-in">
         <div className="bg-white max-w-xl w-full rounded-[2.5rem] shadow-2xl overflow-hidden border border-slate-200 text-center">
           <div className="bg-gradient-to-r from-emerald-500 to-indigo-600 p-8 text-white">
             <h2 className="text-4xl font-black mb-2">🎉 Exam Submitted!</h2>
@@ -1026,7 +1026,7 @@ const LiveTestEngine = ({ testId, onExit }: { testId?: string | null, onExit: ()
   const notAnsweredVisited = [...visited].filter(i => answers[i] === undefined).length;
 
   return (
-    <div className="absolute inset-0 bg-slate-50 z-50 flex flex-col animate-in fade-in zoom-in-95 duration-300">
+    <div className="fixed inset-0 bg-slate-50 z-[100] flex flex-col animate-in fade-in zoom-in-95 duration-300">
       <div className="bg-slate-900 text-white px-6 py-4 flex justify-between items-center shadow-lg">
         <div className="flex items-center gap-4">
           <h1 className="text-xl font-bold tracking-wider uppercase">{testData?.name || 'Mock Test'}</h1>
