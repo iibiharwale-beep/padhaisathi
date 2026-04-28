@@ -608,17 +608,6 @@ const TestSeriesPYQ = ({ setTab }: { setTab: (t: string) => void }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const [testsRes, examsRes] = await Promise.all([
-        supabase.from('test_series').select('*'),
-        supabase.from('exams').select('*')
-      ]);
-      if (testsRes.data) setTests(testsRes.data);
-      if (examsRes.data) setExams(examsRes.data);
-  const [tests, setTests] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
     const fetchExams = async () => {
       const { data } = await supabase.from('exams').select('*');
       if (data) setExams(data);
