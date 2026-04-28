@@ -1236,83 +1236,150 @@ export default function App() {
   };
 
   return (
-    <div className="flex h-screen bg-slate-50 font-sans overflow-hidden text-slate-800">
-      <nav className="w-64 bg-white border-r border-slate-200 flex flex-col z-10 shadow-sm">
-        <div className="p-6 flex items-center gap-3">
-          <div className="bg-indigo-600 p-2 rounded-lg"><BookOpen className="text-white w-6 h-6" /></div>
-          <span className="text-2xl font-bold text-slate-800 tracking-tight">PadhaiSathi</span>
+    <div className="flex flex-col h-screen bg-slate-50 font-sans overflow-hidden text-slate-800">
+
+      {/* ── TOP HEADER (Mobile App Style) ── */}
+      <header className="bg-white border-b border-slate-200 shadow-sm z-20 flex-shrink-0">
+        <div className="flex items-center justify-between px-4 h-14">
+
+          {/* Left: Back Button OR App Logo */}
+          {activeTab !== 'dashboard' ? (
+            <button
+              onClick={goBack}
+              className="flex items-center gap-1.5 bg-indigo-50 text-indigo-700 font-bold px-4 py-2 rounded-xl border border-indigo-200 active:scale-95 transition-all text-base"
+            >
+              <ChevronLeft size={20} /> वापस
+            </button>
+          ) : (
+            <div className="flex items-center gap-2">
+              <div className="bg-indigo-600 p-1.5 rounded-lg"><BookOpen className="text-white w-5 h-5" /></div>
+              <span className="text-lg font-black text-slate-800">PadhaiSathi</span>
+            </div>
+          )}
+
+          {/* Center: Page Title */}
+          <span className="text-base font-black text-slate-800 capitalize">
+            {activeTab === 'dashboard' ? '🏠 Dashboard' :
+             activeTab === 'library' ? '📚 Library' :
+             activeTab === 'tests' ? '🏆 Tests' :
+             activeTab === 'live_test' ? '📝 Live Exam' :
+             activeTab === 'revision' ? '🧠 Revision' :
+             activeTab === 'videos' ? '📺 Videos' :
+             activeTab === 'study' ? '🤖 AI Tutor' :
+             activeTab === 'focus' ? '⏱ Focus' :
+             activeTab === 'community' ? '👥 Community' :
+             activeTab === 'mentorship' ? '🤝 Mentorship' :
+             activeTab === 'jobs' ? '📢 Jobs' :
+             activeTab === 'audio' ? '🎧 Audio' : 'PadhaiSathi'}
+          </span>
+
+          {/* Right: Avatar */}
+          <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 shadow-sm cursor-pointer flex items-center justify-center text-white font-black text-sm">
+            {userName ? userName[0].toUpperCase() : 'P'}
+          </div>
         </div>
-        <div className="flex-1 px-4 space-y-1 overflow-y-auto py-2 custom-scrollbar">
+      </header>
+
+      {/* ── MAIN CONTENT ── */}
+      <main className="flex-1 overflow-y-auto relative pb-20">
+        {renderContent()}
+      </main>
+
+      {/* ── BOTTOM NAVIGATION (Mobile App Style) ── */}
+      {activeTab !== 'live_test' && activeTab !== 'pdf_viewer' && (
+        <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 shadow-lg z-30 flex-shrink-0">
+          <div className="grid grid-cols-5 h-16">
+            {[
+              { id: 'dashboard', icon: LayoutDashboard, label: 'Home' },
+              { id: 'library', icon: Library, label: 'Library' },
+              { id: 'tests', icon: Target, label: 'Tests' },
+              { id: 'study', icon: Zap, label: 'AI Tutor' },
+              { id: 'jobs', icon: Bell, label: 'Jobs' },
+            ].map((item) => (
+              <button
+                key={item.id}
+                onClick={() => navigateTo(item.id)}
+                className={`flex flex-col items-center justify-center gap-1 transition-all active:scale-90 ${
+                  activeTab === item.id
+                    ? 'text-indigo-600'
+                    : 'text-slate-400 hover:text-slate-600'
+                }`}
+              >
+                <div className={`p-1.5 rounded-xl transition-all ${
+                  activeTab === item.id ? 'bg-indigo-50' : ''
+                }`}>
+                  <item.icon size={22} />
+                </div>
+                <span className={`text-[10px] font-bold ${
+                  activeTab === item.id ? 'text-indigo-600' : 'text-slate-400'
+                }`}>{item.label}</span>
+              </button>
+            ))}
+          </div>
+
+          {/* More options row */}
+          <div className="hidden border-t border-slate-100 grid grid-cols-5 h-14 bg-slate-50">
+            {[
+              { id: 'revision', icon: Brain, label: 'Revision' },
+              { id: 'videos', icon: Video, label: 'Videos' },
+              { id: 'focus', icon: Clock, label: 'Focus' },
+              { id: 'community', icon: Users, label: 'Groups' },
+              { id: 'mentorship', icon: UserPlus, label: 'Mentor' },
+            ].map((item) => (
+              <button
+                key={item.id}
+                onClick={() => navigateTo(item.id)}
+                className={`flex flex-col items-center justify-center gap-0.5 transition-all ${
+                  activeTab === item.id ? 'text-indigo-600' : 'text-slate-400'
+                }`}
+              >
+                <item.icon size={18} />
+                <span className="text-[9px] font-bold">{item.label}</span>
+              </button>
+            ))}
+          </div>
+        </nav>
+      )}
+
+      {/* Floating More Menu Button */}
+      {activeTab !== 'live_test' && activeTab !== 'pdf_viewer' && (
+        <div className="fixed bottom-20 right-4 z-40 flex flex-col gap-2">
+          {/* More Features */}
           {[
-            { id: 'dashboard', icon: LayoutDashboard, label: 'Roadmap & Dashboard' },
-            { id: 'library', icon: Library, label: 'Study Library' },
-            { id: 'tests', icon: Target, label: 'Test Series & PYQs', isPremium: true },
-            { id: 'audio', icon: Headphones, label: 'Audio NCERTs', isPremium: true },
-            { id: 'revision', icon: Brain, label: 'Smart Revision' },
-            { id: 'videos', icon: Video, label: 'Summary Videos' },
-            { id: 'study', icon: Zap, label: 'AI Chat Tutor' },
-            { id: 'focus', icon: Clock, label: 'Focus Tools' },
-            { id: 'community', icon: Users, label: 'Doubts & Peer Groups' },
-            { id: 'mentorship', icon: UserPlus, label: 'VIP Mentorship', isPremium: true },
-            { id: 'jobs', icon: Bell, label: 'Job Notifications' },
+            { id: 'revision', icon: Brain, color: 'bg-purple-500', label: 'Revision' },
+            { id: 'videos', icon: Video, color: 'bg-rose-500', label: 'Videos' },
+            { id: 'audio', icon: Headphones, color: 'bg-amber-500', label: 'Audio' },
+            { id: 'focus', icon: Clock, color: 'bg-emerald-500', label: 'Focus' },
+            { id: 'community', icon: Users, color: 'bg-blue-500', label: 'Groups' },
+            { id: 'mentorship', icon: UserPlus, color: 'bg-pink-500', label: 'Mentor' },
           ].map((item) => (
-            <button key={item.id} onClick={() => navigateTo(item.id)} className={`w-full flex justify-between items-center px-4 py-3 rounded-xl transition-all font-medium ${activeTab === item.id ? 'bg-indigo-50 text-indigo-700 shadow-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}>
-              <div className="flex items-center gap-3">
-                <item.icon size={20} className={activeTab === item.id ? "text-indigo-600" : "text-slate-400"} /> {item.label}
-              </div>
-              {item.isPremium && <Star size={14} className="text-amber-500 fill-amber-500" />}
+            <button
+              key={item.id}
+              onClick={() => navigateTo(item.id)}
+              className={`w-12 h-12 ${item.color} text-white rounded-full shadow-lg flex items-center justify-center active:scale-90 transition-all hover:opacity-90 ${
+                activeTab === item.id ? 'ring-2 ring-offset-2 ring-indigo-400' : ''
+              }`}
+              title={item.label}
+            >
+              <item.icon size={20} />
             </button>
           ))}
         </div>
-        <div className="p-4 border-t border-slate-100">
-          <button className="flex items-center gap-3 text-slate-500 hover:text-red-500 transition-colors w-full px-4 py-2 font-medium"><LogOut size={20} /> Logout</button>
-        </div>
-      </nav>
-      <main className="flex-1 flex flex-col relative bg-slate-50/50">
-        <header className="h-16 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-8 z-10">
-          <div className="flex items-center gap-4">
-            {activeTab !== 'dashboard' && (
-              <button 
-                onClick={goBack} 
-                className="flex items-center gap-1 text-indigo-600 hover:bg-indigo-50 px-3 py-1.5 rounded-lg transition-all font-bold text-sm border border-indigo-100 shadow-sm"
-              >
-                <ChevronLeft size={18} /> Back
-              </button>
-            )}
-            <div className="flex items-center gap-2 text-slate-500 text-sm font-medium">
-              <span>PadhaiSathi</span>
-              <ChevronRight size={14} />
-              <span className="text-indigo-600 capitalize">{activeTab.replace('-', ' ').replace('_', ' ')}</span>
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="relative"><Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"/><input type="text" placeholder="Global search..." className="bg-slate-100 pl-10 pr-4 py-2 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 border-none w-64"/></div>
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 shadow-sm cursor-pointer" />
-          </div>
-        </header>
-        <div className="flex-1 overflow-y-auto relative">{renderContent()}</div>
-      </main>
+      )}
+
+      {/* WhatsApp Button */}
+      <a
+        href="https://wa.me/916207715021"
+        target="_blank"
+        rel="noreferrer"
+        className="fixed bottom-20 left-4 bg-[#25D366] text-white w-12 h-12 rounded-full shadow-xl flex items-center justify-center z-40 active:scale-90 transition-all"
+        title="WhatsApp Support"
+      >
+        <MessageCircle size={22} />
+      </a>
 
       {/* Overlays */}
       {showOnboarding && <OnboardingModal onSubmit={handleOnboardingSubmit} />}
-      
-      {/* WhatsApp Premium Help Button */}
-      <a 
-        href="https://wa.me/916207715021" 
-        target="_blank" 
-        rel="noreferrer"
-        className="fixed bottom-6 left-6 bg-gradient-to-r from-[#1E293B] to-[#0F172A] border border-slate-700/50 text-white px-5 py-3 rounded-full shadow-2xl hover:shadow-[#25D366]/20 hover:border-[#25D366]/50 transition-all z-50 flex items-center justify-center gap-3 group"
-        title="Chat on WhatsApp"
-      >
-        <div className="relative flex items-center justify-center">
-          <div className="absolute inset-0 bg-[#25D366] rounded-full blur-md opacity-50 group-hover:opacity-100 transition-opacity"></div>
-          <MessageCircle size={22} className="relative text-[#25D366] z-10" />
-        </div>
-        <div className="flex flex-col text-left">
-          <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold leading-tight">24/7 Support</span>
-          <span className="text-sm font-bold leading-tight">Chat on WhatsApp</span>
-        </div>
-      </a>
     </div>
   );
 }
