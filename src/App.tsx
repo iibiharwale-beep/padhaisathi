@@ -9,61 +9,96 @@ import {
 
 interface Message { id: string; text: string; sender: 'user' | 'ai'; timestamp: Date; }
 
-const Dashboard = ({ onStartAssessment, userName, userExam }: { onStartAssessment: () => void, userName: string, userExam: string }) => (
-  <div className="p-8 space-y-8 animate-in fade-in duration-500">
-    <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-3xl p-8 text-white shadow-xl relative overflow-hidden">
-      <div className="absolute top-0 right-0 opacity-10">
-        <Target size={200} className="-mr-10 -mt-10" />
+const Home = ({ setTab, userName }: { setTab: (t: string) => void, userName: string }) => (
+  <div className="space-y-6 pb-24 animate-in fade-in duration-700 bg-slate-50/50">
+    {/* Hero Banner - Dream Classes Style */}
+    <div className="relative h-[240px] rounded-[24px] overflow-hidden shadow-2xl shadow-maroon-100/30 group mx-4 mt-6">
+      <div className="absolute inset-0 bg-[#8B0000] overflow-hidden">
+        <div className="absolute top-0 right-0 w-80 h-80 bg-white/5 rounded-full -mr-40 -mt-40 transition-transform group-hover:scale-110 duration-700"></div>
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/5 rounded-full -ml-32 -mb-32 transition-transform group-hover:scale-110 duration-700"></div>
       </div>
-      <div className="relative z-10">
-        <div className="flex items-center gap-3 mb-2">
-          <span className="bg-white/20 px-3 py-1 rounded-full text-sm font-semibold backdrop-blur-sm">🎯 Target: {userExam || 'Not Selected'}</span>
+      <div className="relative h-full flex flex-col justify-center px-10 text-white">
+        <div className="flex items-center gap-2 mb-3">
+          <span className="bg-white/20 px-3 py-1 rounded-full text-[10px] font-black tracking-widest backdrop-blur-md uppercase">India's #1 Platform</span>
         </div>
-        <h2 className="text-4xl font-bold mb-4">Welcome back, {userName || 'Learner'}! 👋</h2>
-        <p className="text-indigo-100 text-lg mb-6 max-w-xl">Take a quick 5-minute skill assessment to get a highly personalized AI learning roadmap tailored for you.</p>
-        <button onClick={onStartAssessment} className="bg-white text-indigo-600 px-6 py-3 rounded-xl font-bold hover:scale-105 transition-transform flex items-center gap-2">
-          <Brain size={20} /> Update Target Exam
-        </button>
+        <h2 className="text-3xl md:text-4xl font-black mb-3 leading-tight tracking-tight">Prepare for Your <br/><span className="text-rose-300 underline decoration-rose-300/30 underline-offset-8">Dream Exam</span>! 🚀</h2>
+        <p className="text-white/80 font-bold text-sm mb-8 max-w-xs">Access 730+ Test Series, AI Tutor & Premium Study Notes.</p>
+        <div className="flex gap-3">
+          <button onClick={() => setTab('tests')} className="bg-white text-[#8B0000] px-8 py-3 rounded-2xl font-black text-sm shadow-xl hover:scale-105 active:scale-95 transition-all">Get Test Pass</button>
+          <button className="bg-white/20 backdrop-blur-md text-white px-8 py-3 rounded-2xl font-black text-sm border border-white/30 hover:bg-white/30 transition-all">Live Classes</button>
+        </div>
       </div>
     </div>
 
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-        <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2"><Map className="text-indigo-500"/> Today's Custom Roadmap</h3>
-        <ul className="space-y-4">
-          <li className="flex gap-3"><div className="mt-1 text-green-500"><CheckCircle2 size={20}/></div><div><p className="font-semibold text-slate-700 line-through">Polity: Fundamental Rights</p><p className="text-xs text-slate-400">Completed at 10:00 AM</p></div></li>
-          <li className="flex gap-3"><div className="mt-1 text-indigo-500"><Clock size={20}/></div><div><p className="font-semibold text-slate-800">History: Revolt of 1857</p><p className="text-xs text-slate-500">Scheduled for 2:00 PM</p></div></li>
-          <li className="flex gap-3"><div className="mt-1 text-slate-300"><Clock size={20}/></div><div><p className="font-semibold text-slate-500">Take Daily Mock Test</p><p className="text-xs text-slate-400">Pending</p></div></li>
-        </ul>
+    {/* Categories Grid - Dream Classes Style */}
+    <div className="px-6">
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="text-xl font-black text-slate-900 tracking-tight">Browse Categories</h3>
+        <button className="text-[#8B0000] text-xs font-black bg-rose-50 px-4 py-1.5 rounded-full border border-rose-100 hover:bg-rose-100 transition-all">VIEW ALL</button>
       </div>
-
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-        <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2"><Flame className="text-orange-500"/> Gamification Stats</h3>
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <div className="bg-orange-50 rounded-xl p-4 text-center">
-            <h4 className="text-orange-600 text-2xl font-bold">12</h4>
-            <p className="text-orange-800 text-xs font-semibold">Day Streak</p>
-          </div>
-          <div className="bg-yellow-50 rounded-xl p-4 text-center">
-            <h4 className="text-yellow-600 text-2xl font-bold">450</h4>
-            <p className="text-yellow-800 text-xs font-semibold">Earned Coins</p>
-          </div>
-        </div>
-        <p className="text-sm text-slate-500 text-center">Keep studying to unlock the "Master Scholar" badge!</p>
-      </div>
-
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-        <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2"><Award className="text-purple-500"/> Leaderboard</h3>
-        <div className="space-y-3">
-          {['Rahul Sharma', 'Sneha Patel', 'You'].map((name, i) => (
-            <div key={i} className={`flex justify-between items-center p-3 rounded-lg ${name === 'You' ? 'bg-indigo-50 border border-indigo-100' : 'bg-slate-50'}`}>
-              <div className="flex items-center gap-3">
-                <span className="font-bold text-slate-400">#{i+1}</span>
-                <span className={`font-medium ${name === 'You' ? 'text-indigo-700' : 'text-slate-700'}`}>{name}</span>
-              </div>
-              <span className="text-sm font-bold text-slate-600">{1500 - (i*120)} pts</span>
+      <div className="grid grid-cols-2 gap-4">
+        {[
+          { name: 'Live Tests', icon: <Zap size={28}/>, count: '730+ Series', color: 'bg-rose-50 text-rose-700', tab: 'tests' },
+          { id: 'ai', name: 'AI Tutor', icon: <Bot size={28}/>, count: '24/7 Doubt', color: 'bg-indigo-50 text-indigo-700', tab: 'study' },
+          { name: 'Course Bank', icon: <BookOpen size={28}/>, count: '500+ Videos', color: 'bg-blue-50 text-blue-700', tab: 'library' },
+          { name: 'Job Alerts', icon: <Briefcase size={28}/>, count: 'Daily Updates', color: 'bg-green-50 text-green-700', tab: 'jobs' }
+        ].map((cat, idx) => (
+          <div key={idx} onClick={() => setTab(cat.tab)} className="bg-white p-6 rounded-[24px] border border-slate-100 shadow-sm flex flex-col items-center text-center group cursor-pointer hover:border-rose-200 hover:shadow-xl transition-all duration-300 tap-scale">
+            <div className={`w-16 h-16 rounded-full ${cat.color} flex items-center justify-center mb-4 shadow-inner group-hover:scale-110 transition-transform`}>
+              {cat.icon}
             </div>
-          ))}
+            <span className="font-black text-slate-800 text-sm block mb-1 group-hover:text-rose-700 transition-colors">{cat.name}</span>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{cat.count}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    {/* Popular Tests - Horizontal Scroll */}
+    <div className="pl-6">
+      <div className="flex items-center justify-between pr-6 mb-6">
+        <h3 className="text-xl font-black text-slate-900 tracking-tight">Popular Test Series</h3>
+        <div className="flex gap-2">
+          <button className="p-2 bg-white rounded-full border border-slate-100 shadow-sm text-slate-400 hover:text-[#8B0000]"><ChevronLeft size={20}/></button>
+          <button className="p-2 bg-white rounded-full border border-slate-100 shadow-sm text-slate-400 hover:text-[#8B0000]"><ChevronRight size={20}/></button>
+        </div>
+      </div>
+      <div className="flex gap-5 overflow-x-auto no-scrollbar pr-6 pb-4">
+        {[
+          { name: 'UPSC Prelims 2024', count: '120 Tests', icon: <Shield size={40}/> },
+          { name: 'BPSC 70th PT', count: '85 Tests', icon: <Award size={40}/> },
+          { name: 'SSC CGL Tier-1', count: '150 Tests', icon: <Target size={40}/> },
+          { name: 'UP Police SI', count: '60 Tests', icon: <Star size={40}/> }
+        ].map((item, idx) => (
+          <div key={idx} className="flex-shrink-0 w-[260px] bg-white p-5 rounded-[24px] border border-slate-100 shadow-sm hover:shadow-xl hover:border-rose-100 transition-all group cursor-pointer tap-scale">
+            <div className="h-32 bg-slate-50 rounded-2xl mb-5 flex items-center justify-center text-slate-200 group-hover:text-rose-100 transition-colors overflow-hidden relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-rose-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              {item.icon}
+            </div>
+            <h4 className="font-black text-slate-800 mb-3 truncate group-hover:text-rose-700 transition-colors">{item.name}</h4>
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-black text-slate-400 uppercase tracking-tight">{item.count}</span>
+              <span className="text-[#8B0000] font-black text-xs bg-rose-50 px-4 py-1.5 rounded-full border border-rose-100 group-hover:bg-[#8B0000] group-hover:text-white transition-all">JOIN NOW</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    {/* AI Tutor Card */}
+    <div className="px-6 pb-6">
+      <div className="bg-[#8B0000] p-8 rounded-[32px] text-white flex justify-between items-center relative overflow-hidden shadow-2xl shadow-maroon-100 hover:scale-[1.02] transition-transform cursor-pointer group" onClick={() => setTab('study')}>
+        <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32"></div>
+        <div className="relative z-10">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="bg-white/20 px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-widest">Available 24/7</span>
+          </div>
+          <h4 className="text-2xl font-black mb-1 tracking-tight">PadhaiSathi AI Bot</h4>
+          <p className="text-white/70 text-xs font-bold leading-relaxed max-w-[180px]">Personalized roadmap & instant doubt solving in Hinglish.</p>
+          <button className="mt-6 bg-white text-[#8B0000] px-8 py-2.5 rounded-2xl font-black text-sm shadow-xl tap-scale group-hover:gap-4 transition-all flex items-center gap-2">ASK AI <ArrowRight size={18}/></button>
+        </div>
+        <div className="absolute -right-6 -bottom-6 opacity-20 rotate-12 group-hover:rotate-0 transition-transform duration-700">
+          <Bot size={140} />
         </div>
       </div>
     </div>
@@ -1242,7 +1277,7 @@ export default function App() {
 
     const renderContent = () => {
     switch(activeTab) {
-      case 'dashboard': return <Dashboard onStartAssessment={() => setShowOnboarding(true)} userName={userName} userExam={userExam} />;
+      case 'dashboard': return <Home setTab={navigateTo} userName={userName} />;
       case 'library': return <LibraryView setTab={navigateTo} />;
       case 'content': return <StudyContentViewer />;
       case 'tests': return <TestSeriesPYQ setTab={navigateTo} />;
@@ -1263,27 +1298,27 @@ export default function App() {
               <AnimatePresence>
                 {messages.map((m) => (
                   <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} key={m.id} className={`flex ${m.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-[70%] p-4 rounded-2xl shadow-sm ${m.sender === 'user' ? 'bg-indigo-600 text-white rounded-tr-none' : 'bg-white text-slate-800 border border-slate-100 rounded-tl-none'}`}>
-                      <p className="whitespace-pre-wrap">{m.text}</p>
+                    <div className={`max-w-[70%] p-5 rounded-[24px] shadow-sm ${m.sender === 'user' ? 'bg-[#8B0000] text-white rounded-tr-none' : 'bg-white text-slate-800 border border-slate-100 rounded-tl-none'}`}>
+                      <p className="whitespace-pre-wrap leading-relaxed">{m.text}</p>
                     </div>
                   </motion.div>
                 ))}
                 {isLoading && (
                   <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex justify-start">
                     <div className="max-w-[70%] p-4 rounded-2xl shadow-sm bg-white text-slate-800 border border-slate-100 rounded-tl-none flex gap-2 items-center">
-                      <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                      <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                      <div className="w-2 h-2 bg-rose-400 rounded-full animate-bounce"></div>
+                      <div className="w-2 h-2 bg-rose-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                      <div className="w-2 h-2 bg-rose-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
                     </div>
                   </motion.div>
                 )}
               </AnimatePresence>
             </div>
             <div className="p-6 bg-transparent border-t border-slate-100">
-              <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl border border-slate-200 p-2 flex items-center gap-2">
+              <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl shadow-slate-200/50 border border-slate-200 p-2 flex items-center gap-2">
                 <button onClick={() => setIsRecording(!isRecording)} className={`p-3 rounded-xl transition-all ${isRecording ? 'bg-red-100 text-red-600 animate-pulse' : 'hover:bg-slate-100 text-slate-400'}`}><Mic size={24} /></button>
-                <input value={input} onChange={(e) => setInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleSend()} placeholder="अपना सवाल यहाँ लिखें..." className="flex-1 bg-transparent border-none focus:outline-none focus:ring-0 text-slate-800 p-2" disabled={isLoading} />
-                <button onClick={handleSend} disabled={isLoading} className={`p-3 rounded-xl shadow-lg transition-all ${isLoading ? 'bg-slate-300 text-slate-500 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-200'}`}><Send size={24} /></button>
+                <input value={input} onChange={(e) => setInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleSend()} placeholder="अपना सवाल यहाँ लिखें..." className="flex-1 bg-transparent border-none focus:outline-none focus:ring-0 text-slate-800 p-2 font-bold" disabled={isLoading} />
+                <button onClick={handleSend} disabled={isLoading} className={`p-4 rounded-xl shadow-lg transition-all ${isLoading ? 'bg-slate-300 text-slate-500 cursor-not-allowed' : 'bg-[#8B0000] hover:bg-[#700000] text-white shadow-rose-100'}`}><Send size={20} /></button>
               </div>
             </div>
           </div>
@@ -1294,81 +1329,63 @@ export default function App() {
   return (
     <div className="flex flex-col h-screen bg-slate-50 font-sans overflow-hidden text-slate-800">
 
-      {/* ── TOP HEADER (Mobile App Style) ── */}
+      {/* ── TOP HEADER (Dream Classes Style) ── */}
       <header className="bg-white border-b border-slate-200 shadow-sm z-20 flex-shrink-0">
-        <div className="flex items-center justify-between px-4 h-14">
+        <div className="flex items-center justify-between px-6 h-16">
 
           {/* Left: Back Button OR App Logo */}
           {activeTab !== 'dashboard' ? (
             <button
               onClick={goBack}
-              className="flex items-center gap-1.5 bg-indigo-50 text-indigo-700 font-bold px-4 py-2 rounded-xl border border-indigo-200 active:scale-95 transition-all text-base"
+              className="flex items-center gap-2 bg-rose-50 text-[#8B0000] font-black px-4 py-2 rounded-xl border border-rose-100 active:scale-95 transition-all"
             >
-              <ChevronLeft size={20} /> वापस
+              <ChevronLeft size={20} /> BACK
             </button>
           ) : (
-            <div className="flex items-center gap-2">
-              <div className="bg-indigo-600 p-1.5 rounded-lg"><BookOpen className="text-white w-5 h-5" /></div>
-              <span className="text-lg font-black text-slate-800">PadhaiSathi</span>
+            <div className="flex items-center gap-3">
+              <div className="bg-[#8B0000] p-2 rounded-xl shadow-lg shadow-maroon-100"><Star size={20} className="text-white fill-white" /></div>
+              <span className="text-xl font-black text-slate-900 tracking-tight">PadhaiSathi</span>
             </div>
           )}
 
-          {/* Center: Page Title */}
-          <span className="text-base font-black text-slate-800 capitalize">
-            {activeTab === 'dashboard' ? '🏠 Dashboard' :
-             activeTab === 'library' ? '📚 Library' :
-             activeTab === 'tests' ? '🏆 Tests' :
-             activeTab === 'live_test' ? '📝 Live Exam' :
-             activeTab === 'revision' ? '🧠 Revision' :
-             activeTab === 'videos' ? '📺 Videos' :
-             activeTab === 'study' ? '🤖 AI Tutor' :
-             activeTab === 'focus' ? '⏱ Focus' :
-             activeTab === 'community' ? '👥 Community' :
-             activeTab === 'mentorship' ? '🤝 Mentorship' :
-             activeTab === 'jobs' ? '📢 Jobs' :
-             activeTab === 'audio' ? '🎧 Audio' : 'PadhaiSathi'}
-          </span>
-
           {/* Right: Avatar */}
-          <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 shadow-sm cursor-pointer flex items-center justify-center text-white font-black text-sm">
-            {userName ? userName[0].toUpperCase() : 'P'}
+          <div className="flex items-center gap-4">
+            <button className="p-2 text-slate-400"><Search size={22}/></button>
+            <div className="w-10 h-10 rounded-full bg-[#8B0000] shadow-lg shadow-maroon-100 cursor-pointer flex items-center justify-center text-white font-black text-sm border-2 border-white tap-scale">
+              {userName ? userName[0].toUpperCase() : 'P'}
+            </div>
           </div>
         </div>
       </header>
 
       {/* ── MAIN CONTENT ── */}
-      <main className="flex-1 overflow-y-auto relative pb-20">
+      <main className="flex-1 overflow-y-auto relative pb-24 no-scrollbar">
         {renderContent()}
       </main>
 
-      {/* ── BOTTOM NAVIGATION (Mobile App Style) ── */}
+      {/* ── BOTTOM NAVIGATION (Dream Classes Style) ── */}
       {activeTab !== 'live_test' && activeTab !== 'pdf_viewer' && (
-        <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 shadow-lg z-30 flex-shrink-0">
-          <div className="grid grid-cols-5 h-16">
+        <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 shadow-[0_-10px_40px_rgba(0,0,0,0.05)] z-30 flex-shrink-0">
+          <div className="grid grid-cols-5 h-20 px-2 pb-safe">
             {[
-              { id: 'dashboard', icon: LayoutDashboard, label: 'Home' },
-              { id: 'library', icon: Library, label: 'Library' },
-              { id: 'tests', icon: Target, label: 'Tests' },
-              { id: 'study', icon: Zap, label: 'AI Tutor' },
-              { id: 'jobs', icon: Bell, label: 'Jobs' },
+              { id: 'dashboard', icon: HomeIcon, label: 'Home' },
+              { id: 'tests', icon: Zap, label: 'Tests' },
+              { id: 'study', icon: Bot, label: 'AI Help' },
+              { id: 'library', icon: BookOpen, label: 'Study' },
+              { id: 'jobs', icon: Star, label: 'Jobs' },
             ].map((item) => (
               <button
                 key={item.id}
                 onClick={() => navigateTo(item.id)}
-                className={`flex flex-col items-center justify-center gap-1 transition-all active:scale-90 ${
-                  activeTab === item.id
-                    ? 'text-indigo-600'
-                    : 'text-slate-400 hover:text-slate-600'
+                className={`flex flex-col items-center justify-center gap-1.5 transition-all duration-300 tap-scale ${
+                  activeTab === item.id ? 'text-[#8B0000] scale-110' : 'text-slate-400'
                 }`}
               >
-                <div className={`p-1.5 rounded-xl transition-all ${
-                  activeTab === item.id ? 'bg-indigo-50' : ''
+                <div className={`p-2 rounded-2xl transition-all ${
+                  activeTab === item.id ? 'bg-rose-50' : ''
                 }`}>
-                  <item.icon size={22} />
+                  <item.icon size={24} className={activeTab === item.id ? 'fill-[#8B0000]/10' : ''} />
                 </div>
-                <span className={`text-[10px] font-bold ${
-                  activeTab === item.id ? 'text-indigo-600' : 'text-slate-400'
-                }`}>{item.label}</span>
               </button>
             ))}
           </div>
