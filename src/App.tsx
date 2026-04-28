@@ -4,7 +4,7 @@ import { supabase } from './lib/supabaseClient';
 import { 
   BookOpen, Mic, Send, History, Settings, LogOut, Search, Book, PenTool, Award, ChevronRight, Brain, Sparkles, Clock, Play, Pause, RotateCcw, Download, Home, FileText,
   Map, Target, Zap, LayoutDashboard, Library, Layers, Video, Users, Bell, Newspaper, Image as ImageIcon, Flame, CheckCircle2, ShieldAlert, MessageCircle,
-  Headphones, UserPlus, Calendar, PlayCircle, Star, ChevronLeft
+  Headphones, UserPlus, Calendar, PlayCircle, Star, ChevronLeft, Monitor, Shield, ArrowRight
 } from 'lucide-react';
 
 interface Message { id: string; text: string; sender: 'user' | 'ai'; timestamp: Date; }
