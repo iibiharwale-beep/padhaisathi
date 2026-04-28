@@ -792,17 +792,40 @@ const LiveTestEngine = ({ testId, onExit }: { testId?: string | null, onExit: ()
   const [marked, setMarked] = useState<Set<number>>(new Set());
   const [visited, setVisited] = useState<Set<number>>(new Set([0]));
   const [submitted, setSubmitted] = useState(false);
-  const questions = MOCK_QUESTIONS;
+  const [questions, setQuestions] = useState<any[]>(MOCK_QUESTIONS);
+  const [loadingQ, setLoadingQ] = useState(true);
   const totalQ = questions.length;
 
   useEffect(() => {
     const fetchTestData = async () => {
       if (testId) {
-        const { data } = await supabase.from('test_series').select('*').eq('id', testId).single();
-        if (data) {
-          setTestData(data);
-          setTimeLeft(data.duration_minutes * 60);
+        const { data: ts } = await supabase.from('test_series').select('*').eq('id', testId).single();
+        if (ts) {
+          setTestData(ts);
+          setTimeLeft(ts.duration_minutes * 60);
         }
+        // Fetch real questions from DB
+        const { data: qs } = await supabase
+          .from('questions')
+          .select('*')
+          .eq('test_series_id', testId)
+          .order('question_no', { ascending: true });
+        if (qs && qs.length > 0) {
+          // Map DB fields to component format
+          const lang = ts?.language || 'Hindi';
+          setQuestions(qs.map(q => ({
+            q: lang === 'Hindi' && q.question_hi ? q.question_hi : q.question_en,
+            opts: lang === 'Hindi' && q.option_a_hi
+              ? [q.option_a_hi, q.option_b_hi, q.option_c_hi, q.option_d_hi]
+              : [q.option_a_en, q.option_b_en, q.option_c_en, q.option_d_en],
+            correct: ['A','B','C','D'].indexOf(q.correct_option),
+            explanation: lang === 'Hindi' && q.explanation_hi ? q.explanation_hi : q.explanation_en,
+            subject: q.subject,
+          })));
+        }
+        setLoadingQ(false);
+      } else {
+        setLoadingQ(false);
       }
     };
     fetchTestData();
