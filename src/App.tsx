@@ -770,10 +770,30 @@ const TestSeriesPYQ = ({ setTab }: { setTab: (t: string) => void }) => {
   );
 };
 
+const MOCK_QUESTIONS = [
+  { q: "Which Article of the Constitution deals with the Right to Constitutional Remedies?", opts: ['Article 19', 'Article 21', 'Article 32', 'Article 14'], correct: 2 },
+  { q: "The concept of 'Directive Principles of State Policy' was borrowed from which country?", opts: ['USA', 'Ireland', 'UK', 'Canada'], correct: 1 },
+  { q: "Which Amendment Act added Fundamental Duties to the Constitution?", opts: ['42nd Amendment', '44th Amendment', '86th Amendment', '52nd Amendment'], correct: 0 },
+  { q: "Who is known as the 'Father of the Indian Constitution'?", opts: ['Jawaharlal Nehru', 'Sardar Patel', 'B.R. Ambedkar', 'Rajendra Prasad'], correct: 2 },
+  { q: "The Constituent Assembly adopted the Constitution on:", opts: ['15 August 1947', '26 January 1950', '26 November 1949', '2 October 1948'], correct: 2 },
+  { q: "Under which Article can the President declare a National Emergency?", opts: ['Article 352', 'Article 356', 'Article 360', 'Article 370'], correct: 0 },
+  { q: "Which fundamental right was removed by the 44th Amendment Act?", opts: ['Right to Equality', 'Right to Freedom', 'Right to Property', 'Right to Education'], correct: 2 },
+  { q: "The term 'Secular' was added to the Preamble by which Amendment?", opts: ['44th', '42nd', '52nd', '86th'], correct: 1 },
+  { q: "Which Schedule contains the oath of office for the President?", opts: ['Second Schedule', 'Third Schedule', 'Fourth Schedule', 'Fifth Schedule'], correct: 1 },
+  { q: "The 'Basic Structure Doctrine' was established in which case?", opts: ['Golaknath Case', 'Kesavananda Bharati Case', 'Minerva Mills Case', 'Maneka Gandhi Case'], correct: 1 },
+];
+
 const LiveTestEngine = ({ testId, onExit }: { testId?: string | null, onExit: () => void }) => {
-  const [timeLeft, setTimeLeft] = useState(3600); // 60 mins in seconds
+  const [timeLeft, setTimeLeft] = useState(3600);
   const [hasStarted, setHasStarted] = useState(false);
   const [testData, setTestData] = useState<any>(null);
+  const [currentQ, setCurrentQ] = useState(0);
+  const [answers, setAnswers] = useState<Record<number, number>>({});
+  const [marked, setMarked] = useState<Set<number>>(new Set());
+  const [visited, setVisited] = useState<Set<number>>(new Set([0]));
+  const [submitted, setSubmitted] = useState(false);
+  const questions = MOCK_QUESTIONS;
+  const totalQ = questions.length;
 
   useEffect(() => {
     const fetchTestData = async () => {
@@ -789,16 +809,29 @@ const LiveTestEngine = ({ testId, onExit }: { testId?: string | null, onExit: ()
   }, [testId]);
 
   useEffect(() => {
-    if (hasStarted) {
-      const timer = setInterval(() => setTimeLeft(p => p > 0 ? p - 1 : 0), 1000);
+    if (hasStarted && !submitted) {
+      const timer = setInterval(() => setTimeLeft(p => { if (p <= 1) { setSubmitted(true); return 0; } return p - 1; }), 1000);
       return () => clearInterval(timer);
     }
-  }, [hasStarted]);
+  }, [hasStarted, submitted]);
 
-  const formatTime = (secs: number) => {
-    const m = Math.floor(secs / 60).toString().padStart(2, '0');
-    const s = (secs % 60).toString().padStart(2, '0');
-    return `${m}:${s}`;
+  const formatTime = (secs: number) => `${Math.floor(secs/60).toString().padStart(2,'0')}:${(secs%60).toString().padStart(2,'0')}`;
+
+  const goToQ = (idx: number) => { setCurrentQ(idx); setVisited(v => new Set([...v, idx])); };
+
+  const handleSaveNext = () => { if (currentQ < totalQ - 1) goToQ(currentQ + 1); };
+
+  const handleMarkReview = () => {
+    setMarked(m => { const n = new Set(m); n.has(currentQ) ? n.delete(currentQ) : n.add(currentQ); return n; });
+    if (currentQ < totalQ - 1) goToQ(currentQ + 1);
+  };
+
+  const handleClear = () => setAnswers(a => { const n = {...a}; delete n[currentQ]; return n; });
+
+  const calcScore = () => {
+    let score = 0;
+    questions.forEach((q, i) => { if (answers[i] === q.correct) score += 2; else if (answers[i] !== undefined) score -= 0.66; });
+    return score.toFixed(2);
   };
 
   if (!hasStarted) {
@@ -813,7 +846,7 @@ const LiveTestEngine = ({ testId, onExit }: { testId?: string | null, onExit: ()
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-center">
                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">Total Questions</p>
-                <p className="text-2xl font-black text-slate-800">{testData?.total_questions || 100}</p>
+                <p className="text-2xl font-black text-slate-800">{totalQ}</p>
               </div>
               <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-center">
                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">Duration</p>
@@ -835,101 +868,153 @@ const LiveTestEngine = ({ testId, onExit }: { testId?: string | null, onExit: ()
     );
   }
 
+  if (submitted) {
+    const score = calcScore();
+    const correct = questions.filter((q, i) => answers[i] === q.correct).length;
+    const attempted = Object.keys(answers).length;
+    return (
+      <div className="absolute inset-0 bg-slate-50 z-50 flex items-center justify-center p-8 animate-in fade-in">
+        <div className="bg-white max-w-xl w-full rounded-[2.5rem] shadow-2xl overflow-hidden border border-slate-200 text-center">
+          <div className="bg-gradient-to-r from-emerald-500 to-indigo-600 p-8 text-white">
+            <h2 className="text-4xl font-black mb-2">🎉 Exam Submitted!</h2>
+            <p className="text-white/80">{testData?.name || 'Mock Test'}</p>
+          </div>
+          <div className="p-8 space-y-6">
+            <div className="grid grid-cols-3 gap-4">
+              <div className="bg-emerald-50 p-4 rounded-2xl border border-emerald-100">
+                <p className="text-3xl font-black text-emerald-600">{score}</p>
+                <p className="text-xs font-bold text-emerald-800 mt-1">Total Score</p>
+              </div>
+              <div className="bg-indigo-50 p-4 rounded-2xl border border-indigo-100">
+                <p className="text-3xl font-black text-indigo-600">{correct}/{totalQ}</p>
+                <p className="text-xs font-bold text-indigo-800 mt-1">Correct</p>
+              </div>
+              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                <p className="text-3xl font-black text-slate-600">{attempted}</p>
+                <p className="text-xs font-bold text-slate-800 mt-1">Attempted</p>
+              </div>
+            </div>
+            <div className="space-y-2 text-left max-h-60 overflow-y-auto">
+              {questions.map((q, i) => (
+                <div key={i} className={`p-3 rounded-xl border text-sm ${answers[i] === q.correct ? 'bg-emerald-50 border-emerald-200' : answers[i] !== undefined ? 'bg-red-50 border-red-200' : 'bg-slate-50 border-slate-200'}`}>
+                  <p className="font-bold text-slate-700 text-xs">Q{i+1}: {answers[i] !== undefined ? (answers[i] === q.correct ? '✅ Correct' : `❌ Wrong — Correct: ${q.opts[q.correct]}`) : '⏭ Skipped'}</p>
+                </div>
+              ))}
+            </div>
+            <button onClick={onExit} className="w-full bg-indigo-600 text-white font-black py-4 rounded-2xl hover:bg-indigo-700 transition shadow-xl shadow-indigo-100">Back to Tests</button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const q = questions[currentQ];
+  const answeredCount = Object.keys(answers).length;
+  const notAnsweredVisited = [...visited].filter(i => answers[i] === undefined).length;
+
   return (
     <div className="absolute inset-0 bg-slate-50 z-50 flex flex-col animate-in fade-in zoom-in-95 duration-300">
-      {/* Top Navbar */}
       <div className="bg-slate-900 text-white px-6 py-4 flex justify-between items-center shadow-lg">
         <div className="flex items-center gap-4">
-          <h1 className="text-xl font-bold tracking-wider uppercase">{testData?.name || 'Mega Mock Test'}</h1>
+          <h1 className="text-xl font-bold tracking-wider uppercase">{testData?.name || 'Mock Test'}</h1>
           <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded animate-pulse">LIVE</span>
         </div>
         <div className="flex items-center gap-6">
           <div className="bg-slate-800 px-4 py-2 rounded-lg flex items-center gap-3 border border-slate-700">
             <Clock className={timeLeft < 300 ? "text-red-400 animate-pulse" : "text-emerald-400"} />
-            <span className={`text-xl font-mono font-bold tracking-widest ${timeLeft < 300 ? "text-red-400" : "text-emerald-400"}`}>
-              {formatTime(timeLeft)}
-            </span>
+            <span className={`text-xl font-mono font-bold tracking-widest ${timeLeft < 300 ? 'text-red-400' : 'text-emerald-400'}`}>{formatTime(timeLeft)}</span>
           </div>
           <button onClick={onExit} className="text-slate-400 hover:text-white transition">Exit Exam</button>
         </div>
       </div>
 
       <div className="flex flex-1 overflow-hidden">
-        {/* Left Side: Question Area */}
         <div className="flex-1 flex flex-col border-r border-slate-200 bg-white">
           <div className="border-b border-slate-100 p-4 bg-slate-50 flex justify-between items-center">
-            <h2 className="text-lg font-bold text-slate-700">Question 12</h2>
+            <h2 className="text-lg font-bold text-slate-700">Question {currentQ + 1} of {totalQ}</h2>
             <div className="flex gap-4 text-sm font-semibold">
               <span className="text-emerald-600">+2.00 Marks</span>
               <span className="text-red-500">-0.66 Marks</span>
             </div>
           </div>
           <div className="p-8 flex-1 overflow-y-auto">
-            <p className="text-lg text-slate-800 mb-8 leading-relaxed font-medium">
-              Consider the following statements regarding the 'Basic Structure Doctrine' of the Indian Constitution:
-              <br/><br/>
-              1. It was first articulated in the Golaknath case (1967).<br/>
-              2. Judicial review is considered a part of the basic structure.<br/>
-              3. The Constitution originally contained a provision for the basic structure.
-              <br/><br/>
-              Which of the statements given above is/are correct?
-            </p>
+            <p className="text-lg text-slate-800 mb-8 leading-relaxed font-medium">{q.q}</p>
             <div className="space-y-4 max-w-2xl">
-              {['1 and 2 only', '2 only', '2 and 3 only', '1, 2 and 3'].map((opt, i) => (
-                <label key={i} className="flex items-center gap-4 p-4 border border-slate-200 rounded-xl hover:bg-indigo-50 hover:border-indigo-300 cursor-pointer transition">
-                  <input type="radio" name="q12" className="w-5 h-5 text-indigo-600 focus:ring-indigo-500" />
-                  <span className="text-slate-700 font-medium">{String.fromCharCode(65+i)}) {opt}</span>
-                </label>
+              {q.opts.map((opt, i) => (
+                <div
+                  key={i}
+                  onClick={() => setAnswers(a => ({...a, [currentQ]: i}))}
+                  className={`flex items-center gap-4 p-4 border-2 rounded-xl cursor-pointer transition-all select-none ${
+                    answers[currentQ] === i
+                      ? 'border-indigo-500 bg-indigo-50'
+                      : 'border-slate-200 hover:bg-indigo-50 hover:border-indigo-300'
+                  }`}
+                >
+                  <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
+                    answers[currentQ] === i ? 'border-indigo-600 bg-indigo-600' : 'border-slate-300 bg-white'
+                  }`}>
+                    {answers[currentQ] === i && <div className="w-2.5 h-2.5 rounded-full bg-white" />}
+                  </div>
+                  <span className={`font-medium ${ answers[currentQ] === i ? 'text-indigo-700 font-bold' : 'text-slate-700'}`}>
+                    {String.fromCharCode(65+i)}) {opt}
+                  </span>
+                </div>
               ))}
             </div>
           </div>
-          {/* Action Buttons */}
-          <div className="border-t border-slate-200 p-4 bg-slate-50 flex justify-between items-center">
-            <div className="flex gap-4">
-              <button className="px-6 py-3 border border-slate-300 text-slate-600 rounded-xl hover:bg-slate-100 font-bold">Mark for Review & Next</button>
-              <button className="px-6 py-3 border border-slate-300 text-slate-600 rounded-xl hover:bg-slate-100 font-bold">Clear Response</button>
+          <div className="border-t border-slate-200 p-4 bg-slate-50 flex justify-between items-center flex-wrap gap-3">
+            <div className="flex gap-3">
+              <button
+                onClick={handleMarkReview}
+                className={`px-5 py-3 border-2 rounded-xl font-bold transition-all ${
+                  marked.has(currentQ) ? 'border-purple-500 bg-purple-50 text-purple-700' : 'border-slate-300 text-slate-600 hover:bg-slate-100'
+                }`}
+              >
+                {marked.has(currentQ) ? '★ Marked' : '☆ Mark & Next'}
+              </button>
+              <button onClick={handleClear} className="px-5 py-3 border border-slate-300 text-slate-600 rounded-xl hover:bg-slate-100 font-bold">Clear</button>
             </div>
-            <button className="px-8 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 font-bold shadow-lg shadow-indigo-200">Save & Next</button>
+            <div className="flex gap-3">
+              {currentQ > 0 && (
+                <button onClick={() => goToQ(currentQ - 1)} className="px-5 py-3 border border-slate-300 text-slate-600 rounded-xl hover:bg-slate-100 font-bold">← Prev</button>
+              )}
+              <button onClick={handleSaveNext} className="px-8 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 font-bold shadow-lg shadow-indigo-200">Save & Next →</button>
+            </div>
           </div>
         </div>
 
-        {/* Right Side: Question Palette */}
-        <div className="w-80 bg-slate-50 flex flex-col shadow-xl z-10">
-          <div className="p-4 border-b border-slate-200 flex items-center gap-4">
-            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=sanje" className="w-12 h-12 rounded-full border border-slate-300 bg-white" alt="avatar"/>
-            <div>
-              <p className="font-bold text-slate-800 text-sm">Sanjeev Kumar</p>
-              <p className="text-xs text-slate-500">Roll No: 190244</p>
-            </div>
+        <div className="w-72 bg-slate-50 flex flex-col shadow-xl z-10">
+          <div className="p-4 border-b border-slate-200">
+            <p className="font-bold text-slate-800 text-sm">{testData?.name || 'Mock Test'}</p>
+            <p className="text-xs text-slate-500 mt-0.5">Question {currentQ+1} of {totalQ}</p>
           </div>
-          
-          <div className="p-4 grid grid-cols-2 gap-y-2 gap-x-1 text-xs font-semibold border-b border-slate-200">
-            <div className="flex items-center gap-2"><div className="w-5 h-5 bg-emerald-500 rounded text-white flex items-center justify-center">12</div> Answered</div>
-            <div className="flex items-center gap-2"><div className="w-5 h-5 bg-red-500 rounded text-white flex items-center justify-center">4</div> Not Answered</div>
-            <div className="flex items-center gap-2"><div className="w-5 h-5 bg-slate-200 rounded text-slate-600 border border-slate-300 flex items-center justify-center">80</div> Not Visited</div>
-            <div className="flex items-center gap-2"><div className="w-5 h-5 bg-purple-500 rounded text-white flex items-center justify-center">4</div> Marked</div>
+          <div className="p-3 grid grid-cols-2 gap-y-2 gap-x-1 text-xs font-semibold border-b border-slate-200">
+            <div className="flex items-center gap-2"><div className="w-5 h-5 bg-emerald-500 rounded text-white flex items-center justify-center text-[10px]">{answeredCount}</div> Answered</div>
+            <div className="flex items-center gap-2"><div className="w-5 h-5 bg-red-100 border border-red-300 rounded text-red-700 flex items-center justify-center text-[10px]">{notAnsweredVisited}</div> Not Answered</div>
+            <div className="flex items-center gap-2"><div className="w-5 h-5 bg-slate-200 rounded text-slate-600 border border-slate-300 flex items-center justify-center text-[10px]">{totalQ - visited.size}</div> Not Visited</div>
+            <div className="flex items-center gap-2"><div className="w-5 h-5 bg-purple-500 rounded text-white flex items-center justify-center text-[10px]">{marked.size}</div> Marked</div>
           </div>
-
           <div className="p-4 flex-1 overflow-y-auto">
-            <h3 className="font-bold text-slate-700 mb-3 text-sm">Section: General Studies I</h3>
+            <h3 className="font-bold text-slate-700 mb-3 text-sm">Question Palette</h3>
             <div className="grid grid-cols-5 gap-2">
-              {Array.from({length: 100}).map((_, i) => {
-                let statusClass = 'bg-slate-100 border border-slate-300 text-slate-600 hover:bg-slate-200'; // Default
-                if (i < 12) statusClass = 'bg-emerald-500 text-white border border-emerald-600'; // Answered
-                if (i === 12 || i === 15 || i === 18 || i === 20) statusClass = 'bg-red-500 text-white border border-red-600'; // Not Answered
-                if (i === 45 || i === 50 || i === 52 || i === 60) statusClass = 'bg-purple-500 text-white border border-purple-600'; // Marked
-                
+              {Array.from({length: totalQ}).map((_, i) => {
+                let cls = 'bg-slate-100 border border-slate-300 text-slate-600 hover:bg-slate-200';
+                if (answers[i] !== undefined) cls = 'bg-emerald-500 text-white border border-emerald-600';
+                if (marked.has(i)) cls = 'bg-purple-500 text-white border border-purple-600';
+                else if (visited.has(i) && answers[i] === undefined) cls = 'bg-red-100 text-red-700 border border-red-300';
+                const ring = i === currentQ ? ' ring-2 ring-offset-1 ring-indigo-500' : '';
                 return (
-                  <button key={i} className={`w-10 h-10 rounded-md flex items-center justify-center font-bold text-sm ${statusClass} transition-transform hover:scale-110`}>
+                  <button key={i} onClick={() => goToQ(i)} className={`w-10 h-10 rounded-md flex items-center justify-center font-bold text-sm ${cls}${ring} transition-all hover:scale-110`}>
                     {i+1}
                   </button>
-                )
+                );
               })}
             </div>
           </div>
-
           <div className="p-4 border-t border-slate-200">
-            <button className="w-full bg-emerald-500 text-white font-bold py-3 rounded-xl hover:bg-emerald-600 shadow-lg shadow-emerald-200">Submit Exam</button>
+            <button onClick={() => setSubmitted(true)} className="w-full bg-emerald-500 text-white font-bold py-3 rounded-xl hover:bg-emerald-600 shadow-lg shadow-emerald-200 transition">
+              Submit Exam
+            </button>
           </div>
         </div>
       </div>
