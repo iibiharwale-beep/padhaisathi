@@ -636,15 +636,15 @@ const TestSeriesPYQ = ({ setTab }: { setTab: (t: string) => void }) => {
   return (
   <div className="p-8 space-y-8 animate-in fade-in bg-slate-50/50 min-h-full">
       <div className="max-w-4xl mx-auto text-center mb-12">
-        <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight mb-4">Exam Test Pass 🎫</h2>
-        <p className="text-slate-500 text-lg font-medium">Access 50,000+ Questions from 50 Years of Question Banks.</p>
+        <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight mb-4">Ultimate Test Pass 🎫</h2>
+        <p className="text-slate-500 text-lg font-medium">Access 730+ Test Series & 1 Lakh+ Questions from all Indian Exams.</p>
         
         {/* Search Bar - Professional Look */}
         <div className="mt-8 flex items-center bg-white rounded-3xl shadow-2xl shadow-slate-200/50 p-2 border border-slate-100 max-w-2xl mx-auto">
           <div className="pl-4 text-slate-400"><Search size={24}/></div>
           <input 
             type="text" 
-            placeholder="Search for UPSC, BPSC, SSC, RRB..." 
+            placeholder="Search for SSC CGL, RRB, Banking, Police..." 
             className="flex-1 bg-transparent border-none focus:ring-0 px-4 py-3 font-bold text-slate-700"
           />
           <button className="bg-rose-700 text-white px-8 py-3 rounded-2xl font-black hover:bg-rose-800 transition-all shadow-lg shadow-rose-100">
