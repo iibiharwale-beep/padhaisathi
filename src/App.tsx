@@ -746,39 +746,25 @@ const TestSeriesPYQ = ({ setTab }: { setTab: (t: string) => void }) => {
           </div>
         </div>
 
-        {/* Tabs for Mocks and PYQs */}
-        <div className="flex gap-4 border-b-2 border-slate-100 pb-px mb-8 overflow-x-auto no-scrollbar">
-          <button 
-            onClick={() => setActiveTab('mocks')}
-            className={`pb-4 px-8 text-sm font-black transition-all relative flex-shrink-0 ${activeTab === 'mocks' ? 'text-rose-700' : 'text-slate-400 hover:text-slate-600'}`}
-          >
-            FULL LENGTH MOCKS
-            {activeTab === 'mocks' && <div className="absolute bottom-[-2px] left-0 right-0 h-1 bg-rose-700 rounded-full"></div>}
-          </button>
-          <button 
-            onClick={() => setActiveTab('pyqs')}
-            className={`pb-4 px-8 text-sm font-black transition-all relative flex-shrink-0 ${activeTab === 'pyqs' ? 'text-rose-700' : 'text-slate-400 hover:text-slate-600'}`}
-          >
-            PREVIOUS YEAR PAPERS
-            {activeTab === 'pyqs' && <div className="absolute bottom-[-2px] left-0 right-0 h-1 bg-rose-700 rounded-full"></div>}
-          </button>
-          <button className="pb-4 px-8 text-sm font-black text-slate-300 cursor-not-allowed flex-shrink-0">SECTIONAL TESTS</button>
-        </div>
-
         {loading ? (
           <div className="flex justify-center p-20"><div className="w-12 h-12 border-4 border-rose-100 border-t-rose-700 rounded-full animate-spin"></div></div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {(activeTab === 'mocks' ? mocks : pyqs).map((test) => (
+            {tests.map((test) => (
               <div key={test.id} className="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-2xl shadow-slate-200/40 hover:-translate-y-1 transition-all group relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-rose-50 rounded-full -mr-16 -mt-16 opacity-50 group-hover:scale-150 transition-transform duration-700"></div>
                 
                 <div className="flex justify-between items-start mb-8 relative">
-                  <div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className={`px-3 py-1 rounded-full text-[9px] font-black tracking-widest uppercase border ${test.type === 'mock' ? 'bg-rose-700 text-white border-rose-700' : 'bg-slate-800 text-white border-slate-800'}`}>
+                        {test.type === 'mock' ? 'MOCK TEST' : 'PREVIOUS YEAR'}
+                      </span>
+                    </div>
                     <h4 className="font-black text-slate-800 text-xl group-hover:text-rose-700 transition-colors leading-tight mb-3 pr-8">{test.name}</h4>
                     <div className="flex gap-2">
                       <span className={`text-[10px] font-black px-3 py-1 rounded-lg border ${test.language === 'Hindi' ? 'bg-orange-50 text-orange-600 border-orange-100' : 'bg-blue-50 text-blue-600 border-blue-100'}`}>{test.language.toUpperCase()}</span>
-                      <span className="text-[10px] font-black px-3 py-1 rounded-lg border bg-green-50 text-green-600 border-green-100">SOLVED PAPER</span>
+                      <span className="text-[10px] font-black px-3 py-1 rounded-lg border bg-green-50 text-green-600 border-green-100">FULL SOLUTIONS</span>
                     </div>
                   </div>
                   <div className="bg-rose-50 p-3 rounded-2xl text-rose-700 shadow-sm"><Zap size={24}/></div>
@@ -791,7 +777,7 @@ const TestSeriesPYQ = ({ setTab }: { setTab: (t: string) => void }) => {
                   </div>
                   <div className="bg-slate-50/50 rounded-3xl p-4 text-center border border-slate-100">
                     <div className="text-[10px] font-bold text-slate-400 uppercase mb-1 tracking-widest">Marks</div>
-                    <div className="font-black text-slate-800 text-lg">{test.total_questions}</div>
+                    <div className="font-black text-slate-800 text-lg">{test.total_questions * 2}</div>
                   </div>
                   <div className="bg-slate-50/50 rounded-3xl p-4 text-center border border-slate-100">
                     <div className="text-[10px] font-bold text-slate-400 uppercase mb-1 tracking-widest">Duration</div>
